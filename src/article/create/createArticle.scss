@@ -1,0 +1,23 @@
+@import '../../styleConstant';
+
+.newArticle {
+  width: 938px;
+  background-color: #FFFFFF;
+  margin-top: 34px;
+  padding: 48px 32px;
+  box-shadow: $box-shadow;
+  border: 1px solid $grey-5;
+  border-radius: 6px;
+}
+
+.newArticle__title{
+  color: $grey-9;
+  font-family: Roboto, serif;
+  font-size: 20px;
+  font-weight: 500;
+  line-height: 28px;
+}
+
+.newArticle__form{
+  width:100%;
+}

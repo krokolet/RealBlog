@@ -1,0 +1,44 @@
+@import "../../styleConstant";
+
+.articlePreview{
+  background-color: $background-article-color;
+  border-radius: 5px;
+  padding:15px;
+  box-shadow: $box-shadow;
+}
+
+.articlePreview__title{
+  color: $article-title-color;
+  margin-bottom: 0;
+  font-size: 20px;
+  line-height: 28px;
+}
+
+.avatar{
+  width:100%;
+}
+
+.articlePreview__description{
+  display: flex;
+  width: 100%;
+  border: none;
+  outline:none;
+  cursor: pointer;
+  padding:0;
+  background-color: inherit;
+}
+
+.articlePreview__link{
+  color:inherit;
+  &:hover{
+    color:inherit;
+  }
+  overflow-wrap: break-word;
+}
+
+.articlePreview__username{
+  color: $heading-color;
+  font-size: 18px;
+  line-height: 28px;
+  overflow-wrap: break-word;
+}

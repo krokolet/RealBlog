@@ -1,0 +1,22 @@
+@import '../../styleConstant';
+
+.tag_btn{
+  font-family: Roboto, serif;
+  font-size:16px;
+}
+
+.tag__btn--blue{
+  color:$info-color;
+  border-color:$info-color;
+}
+
+.tag__btn--red{
+  color:$highlight-color;
+  border-color:$highlight-color;
+}
+
+.tag__field{
+  color: $text-color;
+  font-size:  16px;
+  line-height: 24px;
+}

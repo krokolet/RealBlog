@@ -1,0 +1,35 @@
+@import '../styleConstant';
+.formWrapper{
+  margin-top: 59px;
+  padding: 48px 32px;
+  background-color: #FFFFFF;
+  border: 1px solid #D9D9D9;
+  box-shadow: $box-shadow;
+  border-radius: 6px;
+  font-family: Inter, BlinkMacSystemFont, 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  width: 384px;
+}
+
+.form__title{
+  font-weight: 500;
+  font-size: 20px;
+  line-height: 28px;
+  padding-bottom: 45px;
+  color: $grey-9;
+}
+
+.form__label{
+  font-size: 14px;
+  line-height: 22px;
+  color: $grey-9;
+}
+
+.form__label--theme_grey8{
+  color: $grey-8;
+}
+
+.form__question{
+  font-size: 12px;
+  line-height: 20px;
+  color: $grey-7;
+}

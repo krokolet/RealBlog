@@ -1,0 +1,16 @@
+@import '../styleConstant';
+
+.favoritesCount {
+  color: $text-color;
+  padding-left: 5px;
+  font-size: 12px;
+  line-height:22px;
+}
+
+.heart--black{
+  color: $text-color;
+}
+
+.heart--red{
+  color: #FF0707;
+}
