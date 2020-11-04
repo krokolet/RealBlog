@@ -13,6 +13,10 @@
 .tag__btn--red{
   color:$highlight-color;
   border-color:$highlight-color;
+  &:hover, &:focus{
+    color:$highlight-color;
+    border-color:$highlight-color;
+  }
 }
 
 .tag__field{

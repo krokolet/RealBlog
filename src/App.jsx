@@ -38,20 +38,7 @@ const App = () => {
           <Route path={hrefSignup} component={SignUp} />
           <Route exact path={`${hrefArcticles}/:slug`} component={Article} />
           <Route path={hrefCreateArcticle} render={() => <CreateArticle />} />
-          <Route
-            path={`${hrefEditArticle}/:slug/edit`}
-            render={({ match }) =>
-              localStorage.getItem('userInfo') ? (
-                <EditArticle match={match} />
-              ) : (
-                <Redirect
-                  to={{
-                    pathname: hrefLogin,
-                  }}
-                />
-              )
-            }
-          />
+          <Route path={`${hrefEditArticle}/:slug/edit`} render={({ match }) => <EditArticle match={match} />} />
           <Route path={hrefEditProfile} render={() => <EditProfile />} />
         </Switch>
       </Content>

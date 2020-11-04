@@ -4,6 +4,7 @@ import { Formik, Form, Field, ErrorMessage } from 'formik';
 import { Button, Row, Col, Input, Result } from 'antd';
 import PropTypes from 'prop-types';
 import * as _ from 'lodash';
+import { Redirect } from 'react-router-dom';
 import * as actions from '../../store/actions';
 
 import sendUserInfo from '../../sendUserInfo/sendUserInfo';
@@ -12,6 +13,7 @@ import ErrorText from '../../errorsMessage/errorText';
 import '../formStyle.scss';
 import { userPath } from '../../serverData/apiPaths';
 import EditProfileSchema from './editProfileSchema';
+import { hrefHomePage } from '../../serverData/linksToPages';
 
 const mapDispatchToProps = (dispatch) => {
   return {
@@ -27,6 +29,9 @@ const mapStateToProps = ({ userInfo }) => {
 
 const EditProfile = ({ userInfo, setUser }) => {
   const [sendResult, setSendResult] = useState('');
+  if (!userInfo.username) {
+    return <Redirect to={hrefHomePage} />;
+  }
   return (
     <Row className="formWrapper" justify="center">
       <Formik

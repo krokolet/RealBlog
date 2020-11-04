@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import { connect } from 'react-redux';
+import { Redirect } from 'react-router-dom';
 import { Formik, Form } from 'formik';
 import { Col, Row, Result, Button } from 'antd';
+import PropTypes from 'prop-types';
 
 import { addArticlePath } from '../../serverData/apiPaths';
 import './createArticle.scss';
@@ -9,14 +11,23 @@ import ArticleForm from '../form/articleForm';
 import sendArticle from '../../sendArticles/sendArticles';
 import errorFromApiToForm from '../../errorsMessage/errorFromApiToForm';
 import ErrorText from '../../errorsMessage/errorText';
+import { hrefHomePage } from '../../serverData/linksToPages';
+
+const mapStateToProps = ({ userInfo }) => {
+  return { username: userInfo.username };
+};
 
 const normalizeTags = (tags) => {
   const normalTags = tags.filter((tag) => tag.length > 0);
   return [...normalTags];
 };
 
-const CreateArticle = () => {
+const CreateArticle = ({ username }) => {
   const [sendResult, setSendResult] = useState('');
+  if (!username) {
+    return <Redirect to={hrefHomePage} />;
+  }
+
   const initValues = {
     title: '',
     description: '',
@@ -66,4 +77,8 @@ const CreateArticle = () => {
   );
 };
 
-export default connect()(CreateArticle);
+export default connect(mapStateToProps)(CreateArticle);
+
+CreateArticle.propTypes = {
+  username: PropTypes.string.isRequired,
+};

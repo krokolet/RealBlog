@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { Formik, Form } from 'formik';
 import { Col, Row, Result, Button } from 'antd';
 import PropTypes from 'prop-types';
+import { Redirect } from 'react-router-dom';
 
 import { addArticlePath } from '../../serverData/apiPaths';
 import '../create/createArticle.scss';
@@ -10,10 +11,12 @@ import ArticleForm from '../form/articleForm';
 import sendArticle from '../../sendArticles/sendArticles';
 import errorFromApiToForm from '../../errorsMessage/errorFromApiToForm';
 import ErrorText from '../../errorsMessage/errorText';
+import { hrefHomePage } from '../../serverData/linksToPages';
 
-const mapStateToProps = ({ currentArticle }) => {
+const mapStateToProps = ({ currentArticle, userInfo }) => {
   return {
     currentArticle,
+    username: userInfo.username,
   };
 };
 
@@ -22,8 +25,11 @@ const normalizeTags = (tags) => {
   return [...normalTags];
 };
 
-const EditArticle = ({ currentArticle }) => {
+const EditArticle = ({ currentArticle, username }) => {
   const [sendResult, setSendResult] = useState('');
+  if (!username) {
+    return <Redirect to={hrefHomePage} />;
+  }
   const initValues = {
     title: currentArticle.title,
     description: currentArticle.description,
@@ -94,4 +100,5 @@ EditArticle.propTypes = {
       following: PropTypes.bool,
     },
   }.isRequired,
+  username: PropTypes.string.isRequired,
 };
