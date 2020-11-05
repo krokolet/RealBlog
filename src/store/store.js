@@ -81,10 +81,6 @@ const currentArticle = (article = defaultArticle, action) => {
       return article;
   }
 };
-// eslint-disable-next-line no-underscore-dangle
-const ext = window.__REDUX_DEVTOOLS_EXTENSION__;
-const devtoolMiddleware = ext && ext();
-/* eslint-enable */
 
 /* eslint-disable no-underscore-dangle */ const reducer = combineReducers({
   userInfo,
@@ -93,6 +89,6 @@ const devtoolMiddleware = ext && ext();
   currentArticle,
   currentPage,
 });
-const store = createStore(reducer, compose(applyMiddleware(thunk), devtoolMiddleware));
+const store = createStore(reducer, applyMiddleware(thunk));
 
 export default store;
