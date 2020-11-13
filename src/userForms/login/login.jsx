@@ -10,8 +10,8 @@ import sendUserInfo from '../../sendUserInfo/sendUserInfo';
 import errorFromApiToForm from '../../errorsMessage/errorFromApiToForm';
 import * as actions from '../../store/actions';
 import ErrorText from '../../errorsMessage/errorText';
-import { hrefSignup, hrefHomePage } from '../../serverData/linksToPages';
-import { loginPath, profilePath } from '../../serverData/apiPaths';
+import { hrefSignup, hrefHomePage } from '../../serverInfo/linksToPages';
+import { loginPath, profilePath } from '../../serverInfo/apiPaths';
 import './login.scss';
 
 const mapDispatchToProps = (dispatch) => {
@@ -89,7 +89,7 @@ const Login = ({ setUser, history }) => {
 export default connect(null, mapDispatchToProps)(Login);
 
 Login.propTypes = {
-  history: PropTypes.shape({}),
+  history: PropTypes.shape({ replace: PropTypes.func }),
   setUser: PropTypes.func.isRequired,
 };
 

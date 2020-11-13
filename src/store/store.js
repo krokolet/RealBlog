@@ -1,5 +1,5 @@
-import { createStore, compose, applyMiddleware, combineReducers } from 'redux';
-import thunk from 'redux-thunk';
+import { combineReducers } from 'redux';
+
 import {
   SET_USER,
   LOAD_ARTICLES,
@@ -21,7 +21,6 @@ const userInfo = (state = defaultUser, { type, user }) => {
     case SET_USER:
       return {
         email: user.email,
-        token: user.token,
         username: user.username,
         bio: user.bio,
         image: user.image,
@@ -68,7 +67,6 @@ const defaultArticle = {
   updatedAt: '',
   favoritesCount: '',
   author: { username: '', image: '', bio: '', following: false },
-  isEdit: false,
 };
 
 const currentArticle = (article = defaultArticle, action) => {
@@ -81,18 +79,13 @@ const currentArticle = (article = defaultArticle, action) => {
       return article;
   }
 };
-// eslint-disable-next-line no-underscore-dangle
-const ext = window.__REDUX_DEVTOOLS_EXTENSION__;
-const devtoolMiddleware = ext && ext();
-/* eslint-enable */
 
-/* eslint-disable no-underscore-dangle */ const reducer = combineReducers({
+const reducer = combineReducers({
   userInfo,
   articlesList,
   articlesCount,
   currentArticle,
   currentPage,
 });
-const store = createStore(reducer, compose(applyMiddleware(thunk), devtoolMiddleware));
 
-export default store;
+export default reducer;

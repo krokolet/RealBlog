@@ -3,7 +3,7 @@ import 'antd/dist/antd.css';
 import './App.scss';
 
 import { Layout } from 'antd';
-import { Route, Switch, Redirect, withRouter } from 'react-router-dom';
+import { Route, Switch, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 
 import Login from './userForms/login/login';
@@ -23,7 +23,7 @@ import {
   hrefCreateArcticle,
   hrefEditArticle,
   hrefEditProfile,
-} from './serverData/linksToPages';
+} from './serverInfo/linksToPages';
 
 const { Content } = Layout;
 

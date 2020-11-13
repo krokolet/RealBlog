@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { HeartFilled, HeartOutlined } from '@ant-design/icons';
-import { articlesPath, toggleArticleFavoritePath } from '../serverData/apiPaths';
+import { articlesPath, toggleArticleFavoritePath } from '../serverInfo/apiPaths';
 import sendUserInfo from '../sendUserInfo/sendUserInfo';
 import loadSingleArticle from '../loadArticles/loadSingleArticle';
 import * as actions from '../store/actions';

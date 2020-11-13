@@ -10,8 +10,8 @@ import sendUserInfo from '../../sendUserInfo/sendUserInfo';
 import errorFromApiToForm from '../../errorsMessage/errorFromApiToForm';
 import ErrorText from '../../errorsMessage/errorText';
 import '../formStyle.scss';
-import { hrefHomePage, hrefLogin } from '../../serverData/linksToPages';
-import { userPath, signupPath } from '../../serverData/apiPaths';
+import { hrefHomePage, hrefLogin } from '../../serverInfo/linksToPages';
+import { userPath, signupPath } from '../../serverInfo/apiPaths';
 import SignupSchema from './signupSchema';
 
 const mapDispatchToProps = (dispatch) => {

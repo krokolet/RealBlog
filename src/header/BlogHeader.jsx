@@ -9,7 +9,7 @@ import HeaderLoginedUsers from './HeaderLoginedUsers';
 import HeaderNotLoginedUsers from './HeaderNotLoginedUsers';
 import './BlogHeader.scss';
 import sendUserInfo from '../sendUserInfo/sendUserInfo';
-import { loginPath, profilePath } from '../serverData/apiPaths';
+import { loginPath, profilePath } from '../serverInfo/apiPaths';
 import * as actions from '../store/actions';
 
 const { Header } = Layout;

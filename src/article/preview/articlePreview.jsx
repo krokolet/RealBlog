@@ -7,7 +7,7 @@ import * as _ from 'lodash';
 import PropTypes from 'prop-types';
 
 import './articlePreview.scss';
-import { hrefArcticles } from '../../serverData/linksToPages';
+import { hrefArcticles } from '../../serverInfo/linksToPages';
 import Like from '../../like/like';
 
 const ArticlePreview = ({ article }) => {

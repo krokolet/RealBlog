@@ -1,6 +1,6 @@
 import axios from 'axios';
-import { serverUrl } from '../serverData/apiPaths';
-import reqHeaders from '../serverData/reqHeaders';
+import { serverUrl } from '../serverInfo/apiPaths';
+import reqHeaders from '../serverInfo/reqHeaders';
 
 const server = serverUrl;
 

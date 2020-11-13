@@ -6,7 +6,7 @@ import PropTypes from 'prop-types';
 import ArticlePreview from '../article/preview/articlePreview';
 import * as actions from '../store/actions';
 import loadArticles from '../loadArticles/loadArticles';
-import { articlesPath } from '../serverData/apiPaths';
+import { articlesPath } from '../serverInfo/apiPaths';
 import './homepage.scss';
 
 const articlesPerPage = 10;

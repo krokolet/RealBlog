@@ -4,11 +4,11 @@ import * as _ from 'lodash';
 import PropTypes from 'prop-types';
 import { formatDistanceToNow, parseJSON } from 'date-fns';
 import { Col, Row, Tag, Button, Spin, Popconfirm } from 'antd';
-import { articlesPath, deleteArticlePath } from '../serverData/apiPaths';
+import { articlesPath, deleteArticlePath } from '../serverInfo/apiPaths';
 import * as actions from '../store/actions';
 import loadSingleArticle from '../loadArticles/loadSingleArticle';
 import Like from '../like/like';
-import { hrefEditArticle, hrefHomePage } from '../serverData/linksToPages';
+import { hrefEditArticle, hrefHomePage } from '../serverInfo/linksToPages';
 import './article.scss';
 import sendArticle from '../sendArticles/sendArticles';
 

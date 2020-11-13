@@ -11,9 +11,9 @@ import sendUserInfo from '../../sendUserInfo/sendUserInfo';
 import errorFromApiToForm from '../../errorsMessage/errorFromApiToForm';
 import ErrorText from '../../errorsMessage/errorText';
 import '../formStyle.scss';
-import { userPath } from '../../serverData/apiPaths';
+import { userPath } from '../../serverInfo/apiPaths';
 import EditProfileSchema from './editProfileSchema';
-import { hrefHomePage } from '../../serverData/linksToPages';
+import { hrefHomePage } from '../../serverInfo/linksToPages';
 
 const mapDispatchToProps = (dispatch) => {
   return {

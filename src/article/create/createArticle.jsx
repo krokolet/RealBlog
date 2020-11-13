@@ -5,13 +5,13 @@ import { Formik, Form } from 'formik';
 import { Col, Row, Result, Button } from 'antd';
 import PropTypes from 'prop-types';
 
-import { addArticlePath } from '../../serverData/apiPaths';
+import { addArticlePath } from '../../serverInfo/apiPaths';
 import './createArticle.scss';
 import ArticleForm from '../form/articleForm';
 import sendArticle from '../../sendArticles/sendArticles';
 import errorFromApiToForm from '../../errorsMessage/errorFromApiToForm';
 import ErrorText from '../../errorsMessage/errorText';
-import { hrefHomePage } from '../../serverData/linksToPages';
+import { hrefHomePage } from '../../serverInfo/linksToPages';
 
 const mapStateToProps = ({ userInfo }) => {
   return { username: userInfo.username };
