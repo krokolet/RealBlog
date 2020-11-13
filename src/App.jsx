@@ -6,14 +6,14 @@ import { Layout } from 'antd';
 import { Route, Switch, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 
-import Login from './userForms/login/login';
-import SignUp from './userForms/signup/signup';
-import Homepage from './homepage/homepage';
-import BlogHeader from './header/BlogHeader';
-import Article from './article/article';
-import CreateArticle from './article/create/createArticle';
-import EditArticle from './article/edit/editArticle';
-import EditProfile from './userForms/editProfile/editProfile';
+import Login from './pages/Login/login';
+import SignUp from './pages/SignUp/signup';
+import Homepage from './pages/HomePage/homepage';
+import BlogHeader from './components/BlogHeader/BlogHeader';
+import Article from './pages/Article/article';
+import CreateArticle from './pages/CreateArticle/createArticle';
+import EditArticle from './pages/EditArticle/editArticle';
+import EditProfile from './pages/EditProfile/editProfile';
 
 import {
   hrefHomePage,

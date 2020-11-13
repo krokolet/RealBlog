@@ -1,0 +1,11 @@
+@import '../../styleConstant';
+
+.articlesWrapper{
+  width: 941px;
+  padding-top: 26px;
+  .ant-pagination-item-link{
+  background-color: $background-color;
+    border: none;
+  }
+}
+
