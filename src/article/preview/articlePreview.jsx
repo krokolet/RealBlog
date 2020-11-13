@@ -75,7 +75,7 @@ const ArticlePreview = ({ article }) => {
 export default connect()(ArticlePreview);
 
 ArticlePreview.propTypes = {
-  article: {
+  article: PropTypes.shape({
     slug: PropTypes.string,
     title: PropTypes.string,
     description: PropTypes.string,
@@ -83,12 +83,12 @@ ArticlePreview.propTypes = {
     tagList: PropTypes.arrayOf(PropTypes.string),
     createdAt: PropTypes.string,
     updatedAt: PropTypes.string,
-    favoritesCount: PropTypes.string,
-    author: {
+    favoritesCount: PropTypes.number,
+    author: PropTypes.shape({
       username: PropTypes.string,
       image: PropTypes.string,
       bio: PropTypes.string,
       following: PropTypes.bool,
-    },
-  }.isRequired,
+    }),
+  }).isRequired,
 };

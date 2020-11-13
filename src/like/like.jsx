@@ -56,24 +56,28 @@ const Like = ({ slug, articlesList, setArticles }) => {
 export default connect(mapStateToProps, mapDispatchToProps)(Like);
 
 Like.propTypes = {
-  articlesList: [
-    {
-      slug: PropTypes.string,
-      title: PropTypes.string,
-      description: PropTypes.string,
-      body: PropTypes.string,
+  articlesList: PropTypes.arrayOf(
+    PropTypes.shape({
+      slug: PropTypes.string.isRequired,
+      title: PropTypes.string.isRequired,
+      description: PropTypes.string.isRequired,
+      body: PropTypes.string.isRequired,
       tagList: PropTypes.arrayOf(PropTypes.string),
-      createdAt: PropTypes.string,
+      createdAt: PropTypes.string.isRequired,
       updatedAt: PropTypes.string,
-      favoritesCount: PropTypes.string,
-      author: {
-        username: PropTypes.string,
+      favoritesCount: PropTypes.number.isRequired,
+      author: PropTypes.shape({
+        username: PropTypes.string.isRequired,
         image: PropTypes.string,
         bio: PropTypes.string,
-        following: PropTypes.bool,
-      },
-    },
-  ].isRequired,
+        following: PropTypes.bool.isRequired,
+      }),
+    })
+  ),
   setArticles: PropTypes.func.isRequired,
   slug: PropTypes.string.isRequired,
+};
+
+Like.defaultProps = {
+  articlesList: undefined,
 };
