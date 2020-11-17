@@ -2,7 +2,7 @@ import React from 'react';
 import { Col } from 'antd';
 
 import { Link } from 'react-router-dom';
-import { hrefLogin, hrefSignup } from '../../../serverInfo/linksToPages';
+import { hrefLogin, hrefSignup } from '../../../Api/linksToPages';
 
 const HeaderNotLoginedUsers = () => {
   return (

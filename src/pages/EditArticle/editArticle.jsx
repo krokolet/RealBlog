@@ -5,13 +5,12 @@ import { Col, Row, Result, Button } from 'antd';
 import PropTypes from 'prop-types';
 import { Redirect } from 'react-router-dom';
 
-import { addArticlePath } from '../../serverInfo/apiPaths';
 import '../CreateArticle/createArticle.scss';
 import ArticleForm from '../../components/ArticleForm/articleForm';
-import sendArticle from '../../sendArticles/sendArticles';
-import errorFromApiToForm from '../../errorFromApiToForm/errorFromApiToForm';
+import errorFromApiToForm from '../../Api/errorFromApiToForm';
 import ErrorText from '../../components/ErrorText/errorText';
-import { hrefHomePage } from '../../serverInfo/linksToPages';
+import { hrefHomePage } from '../../Api/linksToPages';
+import API from '../../Api/api';
 
 const mapStateToProps = ({ currentArticle, userInfo }) => {
   return {
@@ -24,6 +23,8 @@ const normalizeTags = (tags) => {
   const normalTags = tags.filter((tag) => tag.length > 0);
   return [...normalTags];
 };
+
+const { editArticle } = new API();
 
 const EditArticle = ({ currentArticle, username }) => {
   const [sendResult, setSendResult] = useState('');
@@ -47,7 +48,7 @@ const EditArticle = ({ currentArticle, username }) => {
           <Formik
             initialValues={initValues}
             onSubmit={(values, { setSubmitting, setErrors }) => {
-              sendArticle(`${addArticlePath}/${currentArticle.slug}`, 'put', {
+              editArticle(currentArticle.slug, {
                 article: { ...values, tags: [normalizeTags(values.tagList)] },
               })
                 .then((response) => {

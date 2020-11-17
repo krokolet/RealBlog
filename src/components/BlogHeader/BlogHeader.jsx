@@ -3,16 +3,15 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { Row, Col, Layout } from 'antd';
 import PropTypes from 'prop-types';
-import * as _ from 'lodash';
 
 import HeaderLoginedUsers from './HeaderLoginedUser/HeaderLoginedUsers';
 import HeaderNotLoginedUsers from './HeaderNotLoginedUser/HeaderNotLoginedUsers';
 import './BlogHeader.scss';
-import sendUserInfo from '../../sendUserInfo/sendUserInfo';
-import { loginPath, profilePath } from '../../serverInfo/apiPaths';
+import API from '../../Api/api';
 import * as actions from '../../store/actions';
 
 const { Header } = Layout;
+const { login, getProfile } = new API();
 
 const mapStateToProps = ({ userInfo }) => ({
   username: userInfo.username,
@@ -24,9 +23,9 @@ const mapDispatchToProps = (dispatch) => {
 
 const BlogHeader = ({ username, setUser }) => {
   if (localStorage.getItem('userInfo') && !username) {
-    sendUserInfo(loginPath, 'post', JSON.parse(localStorage.getItem('userInfo'))).then(({ user }) =>
-      sendUserInfo(`${profilePath}/${user.username}`, 'get').then(({ image }) => {
-        setUser(_.omit(user, ['token']), image);
+    login(JSON.parse(localStorage.getItem('userInfo'))).then(({ user }) =>
+      getProfile(user).then(({ image }) => {
+        setUser({ ...user, image });
       })
     );
   }

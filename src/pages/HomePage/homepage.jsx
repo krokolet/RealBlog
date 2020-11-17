@@ -5,11 +5,13 @@ import PropTypes from 'prop-types';
 
 import ArticlePreview from '../../components/ArticlePreview/articlePreview';
 import * as actions from '../../store/actions';
-import loadArticles from '../../loadArticles/loadArticles';
-import { articlesPath } from '../../serverInfo/apiPaths';
+import API from '../../Api/api';
+import { articlesPath } from '../../Api/apiPaths';
 import './homepage.scss';
 
 const articlesPerPage = 10;
+
+const { loadArticles } = new API();
 
 const mapStateToProps = ({ userInfo, articlesCount, articlesList, currentPage }) => ({
   username: userInfo.username,

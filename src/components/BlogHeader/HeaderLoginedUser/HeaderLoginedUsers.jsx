@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { Button, Col } from 'antd';
 import { Link } from 'react-router-dom';
 
-import { hrefCreateArcticle, hrefEditProfile } from '../../../serverInfo/linksToPages';
+import { hrefCreateArcticle, hrefEditProfile } from '../../../Api/linksToPages';
 import avatar from '../img/Avatar.svg';
 import * as actions from '../../../store/actions';
 import './headerLoginedUser.scss';
@@ -56,5 +56,9 @@ export default connect(mapStateToProps, mapDispatchToProps)(HeaderLoginedUsers);
 HeaderLoginedUsers.propTypes = {
   username: PropTypes.string.isRequired,
   logoutUser: PropTypes.func.isRequired,
-  userImage: PropTypes.string.isRequired,
+  userImage: PropTypes.string,
+};
+
+HeaderLoginedUsers.defaultProps = {
+  userImage: undefined,
 };

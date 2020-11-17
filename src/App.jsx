@@ -23,7 +23,7 @@ import {
   hrefCreateArcticle,
   hrefEditArticle,
   hrefEditProfile,
-} from './serverInfo/linksToPages';
+} from './Api/linksToPages';
 
 const { Content } = Layout;
 

@@ -5,13 +5,12 @@ import { Formik, Form } from 'formik';
 import { Col, Row, Result, Button } from 'antd';
 import PropTypes from 'prop-types';
 
-import { addArticlePath } from '../../serverInfo/apiPaths';
 import './createArticle.scss';
 import ArticleForm from '../../components/ArticleForm/articleForm';
-import sendArticle from '../../sendArticles/sendArticles';
-import errorFromApiToForm from '../../errorFromApiToForm/errorFromApiToForm';
+import errorFromApiToForm from '../../Api/errorFromApiToForm';
 import ErrorText from '../../components/ErrorText/errorText';
-import { hrefHomePage } from '../../serverInfo/linksToPages';
+import { hrefHomePage } from '../../Api/linksToPages';
+import API from '../../Api/api';
 
 const mapStateToProps = ({ userInfo }) => {
   return { username: userInfo.username };
@@ -21,6 +20,8 @@ const normalizeTags = (tags) => {
   const normalTags = tags.filter((tag) => tag.length > 0);
   return [...normalTags];
 };
+
+const { postArticle } = new API();
 
 const CreateArticle = ({ username }) => {
   const [sendResult, setSendResult] = useState('');
@@ -45,7 +46,7 @@ const CreateArticle = ({ username }) => {
           <Formik
             initialValues={initValues}
             onSubmit={(values, { setSubmitting, setErrors }) => {
-              sendArticle(addArticlePath, 'post', { article: { ...values, tags: [normalizeTags(values.tagList)] } })
+              postArticle({ article: { ...values, tags: [normalizeTags(values.tagList)] } })
                 .then((response) => {
                   setSendResult(response);
                 })

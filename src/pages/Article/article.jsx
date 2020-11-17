@@ -4,13 +4,11 @@ import * as _ from 'lodash';
 import PropTypes from 'prop-types';
 import { formatDistanceToNow, parseJSON } from 'date-fns';
 import { Col, Row, Tag, Button, Spin, Popconfirm } from 'antd';
-import { articlesPath, deleteArticlePath } from '../../serverInfo/apiPaths';
 import * as actions from '../../store/actions';
-import loadSingleArticle from '../../loadArticles/loadSingleArticle';
 import Like from '../../components/Like/like';
-import { hrefEditArticle, hrefHomePage } from '../../serverInfo/linksToPages';
+import { hrefEditArticle, hrefHomePage } from '../../Api/linksToPages';
 import './article.scss';
-import sendArticle from '../../sendArticles/sendArticles';
+import API from '../../Api/api';
 
 const mapDispatchToProps = (dispatch) => {
   return {
@@ -25,6 +23,8 @@ const mapStateToProps = ({ currentArticle, userInfo }) => {
     currentUser: userInfo.username,
   };
 };
+
+const { loadSingleArticle, deleteArticle } = new API();
 
 const Article = ({
   history,
@@ -46,7 +46,7 @@ const Article = ({
   } = currentArticle;
 
   useEffect(() => {
-    loadSingleArticle(articlesPath, slug)
+    loadSingleArticle(slug)
       .then(({ article }) => setCurrentArticle(article))
       .catch(() => {
         history.push(hrefHomePage);
@@ -107,7 +107,7 @@ const Article = ({
                       okText="Yes"
                       title="Are you sure to delete this article?"
                       onConfirm={() => {
-                        sendArticle(`${deleteArticlePath}/${slug}`, 'delete')
+                        deleteArticle(slug)
                           .then(() => delCurrentArticle())
                           .then(() => history.push(hrefHomePage));
                       }}

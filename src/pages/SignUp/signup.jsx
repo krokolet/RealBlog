@@ -6,19 +6,20 @@ import * as _ from 'lodash';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import * as actions from '../../store/actions';
-import sendUserInfo from '../../sendUserInfo/sendUserInfo';
-import errorFromApiToForm from '../../errorFromApiToForm/errorFromApiToForm';
+import errorFromApiToForm from '../../Api/errorFromApiToForm';
 import ErrorText from '../../components/ErrorText/errorText';
 import '../formStyle.scss';
-import { hrefHomePage, hrefLogin } from '../../serverInfo/linksToPages';
-import { userPath, signupPath } from '../../serverInfo/apiPaths';
+import { hrefHomePage, hrefLogin } from '../../Api/linksToPages';
 import SignupSchema from './signupSchema';
+import API from '../../Api/api';
 
 const mapDispatchToProps = (dispatch) => {
   return {
     setUser: (user) => dispatch(actions.setUser(user)),
   };
 };
+
+const { signUp } = new API();
 
 const SignUp = ({ setUser, history }) => {
   return (
@@ -33,7 +34,7 @@ const SignUp = ({ setUser, history }) => {
         }}
         validationSchema={SignupSchema}
         onSubmit={(values, { setSubmitting, setErrors }) => {
-          sendUserInfo(signupPath, 'post', {
+          signUp({
             ...values,
             image: 'https://static.productionready.io/images/smiley-cyrus.jpg',
           })
@@ -42,10 +43,8 @@ const SignUp = ({ setUser, history }) => {
                 'userInfo',
                 JSON.stringify({ email: values.email, password: values.password, token: user.token }).toString()
               );
-              sendUserInfo(userPath, 'get').then(({ user: { image } }) => {
-                setUser(_.omit({ ...user, image }, ['token']));
-                history.replace(hrefHomePage);
-              });
+              setUser(_.omit({ ...user }, ['token']));
+              history.replace(hrefHomePage);
             })
             .catch((error) => setErrors(errorFromApiToForm(error)));
           setSubmitting(false);

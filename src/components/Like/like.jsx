@@ -2,14 +2,12 @@ import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { HeartFilled, HeartOutlined } from '@ant-design/icons';
-import { articlesPath, toggleArticleFavoritePath } from '../../serverInfo/apiPaths';
-import sendUserInfo from '../../sendUserInfo/sendUserInfo';
-import loadSingleArticle from '../../loadArticles/loadSingleArticle';
 import * as actions from '../../store/actions';
 import './like.scss';
+import API from '../../Api/api';
 
-const mapStateToProps = ({ currentArticle, articlesList }) => {
-  return { currentArticle, articlesList };
+const mapStateToProps = ({ currentArticle, articlesList, userInfo: { username } }) => {
+  return { currentArticle, articlesList, username };
 };
 
 const mapDispatchToProps = (dispatch) => {
@@ -19,31 +17,28 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-const Like = ({ slug, articlesList, setArticles }) => {
+const { loadSingleArticle, setLike, deleteLike } = new API();
+
+const Like = ({ slug, username }) => {
   const [{ favorited, favCount }, setFavCount] = useState({});
 
   if (favorited === undefined) {
-    loadSingleArticle(articlesPath, slug).then(({ article }) => {
+    loadSingleArticle(slug).then(({ article }) => {
       setFavCount({ favorited: article.favorited, favCount: article.favoritesCount });
     });
   }
 
   const toggleLike = () => {
-    const method = favorited ? 'delete' : 'post';
-    sendUserInfo(`${toggleArticleFavoritePath}/${slug}/favorite`, method).then(({ article }) => {
-      if (articlesList.length) {
-        const currList = articlesList.map((art) =>
-          art.slug === slug ? { ...art, favorited: article.favorited } : art
-        );
-        setArticles(currList);
-      }
-      setFavCount({ favorited: article.favorited, favCount: article.favoritesCount });
-    });
+    if (favorited) {
+      deleteLike(slug).then(() => setFavCount({ favorited: false, favCount: favCount - 1 }));
+    } else {
+      setLike(slug).then(() => setFavCount({ favorited: true, favCount: favCount + 1 }));
+    }
   };
 
   return (
     <>
-      {favorited ? (
+      {favorited && username ? (
         <HeartFilled onClick={toggleLike} className="heart--red" />
       ) : (
         <HeartOutlined onClick={toggleLike} className="heart--balck" />
@@ -56,28 +51,10 @@ const Like = ({ slug, articlesList, setArticles }) => {
 export default connect(mapStateToProps, mapDispatchToProps)(Like);
 
 Like.propTypes = {
-  articlesList: PropTypes.arrayOf(
-    PropTypes.shape({
-      slug: PropTypes.string.isRequired,
-      title: PropTypes.string.isRequired,
-      description: PropTypes.string.isRequired,
-      body: PropTypes.string.isRequired,
-      tagList: PropTypes.arrayOf(PropTypes.string),
-      createdAt: PropTypes.string.isRequired,
-      updatedAt: PropTypes.string,
-      favoritesCount: PropTypes.number.isRequired,
-      author: PropTypes.shape({
-        username: PropTypes.string.isRequired,
-        image: PropTypes.string,
-        bio: PropTypes.string,
-        following: PropTypes.bool.isRequired,
-      }),
-    })
-  ),
-  setArticles: PropTypes.func.isRequired,
+  username: PropTypes.string,
   slug: PropTypes.string.isRequired,
 };
 
 Like.defaultProps = {
-  articlesList: undefined,
+  username: undefined,
 };

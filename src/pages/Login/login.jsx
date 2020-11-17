@@ -6,19 +6,20 @@ import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import * as _ from 'lodash';
 
-import sendUserInfo from '../../sendUserInfo/sendUserInfo';
-import errorFromApiToForm from '../../errorFromApiToForm/errorFromApiToForm';
+import errorFromApiToForm from '../../Api/errorFromApiToForm';
 import * as actions from '../../store/actions';
 import ErrorText from '../../components/ErrorText/errorText';
-import { hrefSignup, hrefHomePage } from '../../serverInfo/linksToPages';
-import { loginPath, profilePath } from '../../serverInfo/apiPaths';
+import { hrefSignup, hrefHomePage } from '../../Api/linksToPages';
 import './login.scss';
+import API from '../../Api/api';
 
 const mapDispatchToProps = (dispatch) => {
   return {
     setUser: (user) => dispatch(actions.setUser(user)),
   };
 };
+
+const { login, getProfile } = new API();
 
 const Login = ({ setUser, history }) => {
   return (
@@ -29,13 +30,13 @@ const Login = ({ setUser, history }) => {
           password: '',
         }}
         onSubmit={(values, { setSubmitting, setErrors }) => {
-          sendUserInfo(loginPath, 'post', values)
+          login(values)
             .then(({ user }) => {
               localStorage.setItem(
                 'userInfo',
                 JSON.stringify({ email: values.email, password: values.password, token: user.token }).toString()
               );
-              sendUserInfo(`${profilePath}/${user.username}`, 'get').then(({ image }) => {
+              getProfile(user).then(({ image }) => {
                 setUser(_.omit(user, ['token']), image);
                 history.replace(hrefHomePage);
               });

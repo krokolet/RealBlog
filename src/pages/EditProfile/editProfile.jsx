@@ -7,13 +7,12 @@ import * as _ from 'lodash';
 import { Redirect } from 'react-router-dom';
 import * as actions from '../../store/actions';
 
-import sendUserInfo from '../../sendUserInfo/sendUserInfo';
-import errorFromApiToForm from '../../errorFromApiToForm/errorFromApiToForm';
+import errorFromApiToForm from '../../Api/errorFromApiToForm';
 import ErrorText from '../../components/ErrorText/errorText';
 import '../formStyle.scss';
-import { userPath } from '../../serverInfo/apiPaths';
 import EditProfileSchema from './editProfileSchema';
-import { hrefHomePage } from '../../serverInfo/linksToPages';
+import { hrefHomePage } from '../../Api/linksToPages';
+import API from '../../Api/api';
 
 const mapDispatchToProps = (dispatch) => {
   return {
@@ -26,6 +25,8 @@ const mapStateToProps = ({ userInfo }) => {
     userInfo,
   };
 };
+
+const { editProfile } = new API();
 
 const EditProfile = ({ userInfo, setUser }) => {
   const [sendResult, setSendResult] = useState('');
@@ -49,7 +50,7 @@ const EditProfile = ({ userInfo, setUser }) => {
             setSubmitting(false);
             return;
           }
-          sendUserInfo(userPath, 'put', normalizeValues)
+          editProfile(normalizeValues)
             .then(({ user }) => {
               const { password } = localStorage.getItem('userInfo');
               localStorage.setItem(
@@ -132,11 +133,15 @@ const EditProfile = ({ userInfo, setUser }) => {
 export default connect(mapStateToProps, mapDispatchToProps)(EditProfile);
 
 EditProfile.propTypes = {
-  userInfo: {
+  userInfo: PropTypes.shape({
     username: PropTypes.string,
     image: PropTypes.string,
     email: PropTypes.string,
     bio: PropTypes.string,
-  }.isRequired,
+  }),
   setUser: PropTypes.func.isRequired,
+};
+
+EditProfile.defaultProps = {
+  userInfo: undefined,
 };
