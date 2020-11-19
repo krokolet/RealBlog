@@ -1,4 +1,4 @@
-const normalizeMessageForForm = ({ errors }) => {
+const normalizeMessageForForm = (errors) => {
   const errTypes = Object.keys(errors);
 
   return errTypes.reduce(
@@ -11,11 +11,11 @@ const normalizeMessageForForm = ({ errors }) => {
   );
 };
 
-const errorFromApiToForm = (error) => {
-  if (!error) return { errorUnknown: 'Sorry, something went wrong :(' };
-  switch (error.status) {
+const errorFromApiToForm = (status, errors) => {
+  if (!errors) return { errorUnknown: 'Sorry, something went wrong :(' };
+  switch (status) {
     case 422:
-      return normalizeMessageForForm(error.data);
+      return normalizeMessageForForm(errors);
     default:
       return { errorUnknown: 'Sorry, something went wrong :(' };
   }

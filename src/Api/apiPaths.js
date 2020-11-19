@@ -1,4 +1,3 @@
-export const serverUrl = 'https://conduit.productionready.io';
 export const loginPath = 'api/users/login';
 export const signupPath = 'api/users';
 export const articlesPath = 'api/articles';

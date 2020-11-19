@@ -33,6 +33,17 @@ class API {
     }
   };
 
+  loadArticles = (articlesPerPage, currentPage, pathApi) => {
+    const config = {
+      headers: this.reqHeaders(),
+      params: {
+        limit: articlesPerPage,
+        offset: (currentPage - 1) * articlesPerPage,
+      },
+    };
+    return this.getResourse(pathApi, config);
+  };
+
   sendInfo = async (pathApi, method, values) => {
     const path = new URL(pathApi, this.serverUrl);
     const normValues = JSON.stringify(values);
@@ -55,17 +66,6 @@ class API {
 
   editArticle = (slug, article) => {
     return this.sendInfo(`${addArticlePath}/${slug}`, 'put', article);
-  };
-
-  loadArticles = (articlesPerPage, currentPage, pathApi) => {
-    const config = {
-      headers: this.reqHeaders(),
-      params: {
-        limit: articlesPerPage,
-        offset: (currentPage - 1) * articlesPerPage,
-      },
-    };
-    return this.getResourse(pathApi, config);
   };
 
   loadSingleArticle = (slug) => {

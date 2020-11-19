@@ -52,6 +52,10 @@ const BlogHeader = ({ username, setUser }) => {
 export default connect(mapStateToProps, mapDispatchToProps)(BlogHeader);
 
 BlogHeader.propTypes = {
-  username: PropTypes.string.isRequired,
+  username: PropTypes.string,
   setUser: PropTypes.func.isRequired,
+};
+
+BlogHeader.defaultProps = {
+  username: undefined,
 };

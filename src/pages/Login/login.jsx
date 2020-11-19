@@ -1,93 +1,107 @@
-import React from 'react';
-import { Formik, Form, Field, ErrorMessage } from 'formik';
+import React, { useEffect } from 'react';
+import { useForm, Controller } from 'react-hook-form';
 import { connect } from 'react-redux';
 import { Button, Row, Col, Input } from 'antd';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import * as _ from 'lodash';
 
-import errorFromApiToForm from '../../Api/errorFromApiToForm';
 import * as actions from '../../store/actions';
 import ErrorText from '../../components/ErrorText/errorText';
 import { hrefSignup, hrefHomePage } from '../../Api/linksToPages';
 import './login.scss';
-import API from '../../Api/api';
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    setUser: (user) => dispatch(actions.setUser(user)),
+    loginUser: (user) => dispatch(actions.loginUser(user)),
   };
 };
 
-const { login, getProfile } = new API();
+const mapStateToProps = ({ fetchStatus: { isFetching, errorsFetching } }) => {
+  return { isFetching, errorsFetching };
+};
 
-const Login = ({ setUser, history }) => {
+const Login = ({ loginUser, history, isFetching, errorsFetching }) => {
+  useEffect(() => {
+    if (errorsFetching && !Object.keys(errors).length) {
+      Object.entries(errorsFetching).map((error) => setError(error[0], { message: error[1] }));
+    }
+  });
+
+  const { handleSubmit, control, setError, clearErrors, formState } = useForm();
+
+  const { touched, errors } = formState;
+  /*
+  if (Object.keys(touched).length && Object.keys(errors).length) {
+    clearErrors();}
+*/
+  /*
+  if (errorsFetching && !Object.keys(errors).length) {
+    Object.entries(errorsFetching).map((error) => setError(error[0], { message: error[1] }));
+  }
+*/
+  const onSubmit = (values) => {
+    loginUser(values).then(() => history.replace(hrefHomePage));
+    console.log(errors);
+  };
+
   return (
     <Row className="formWrapper" justify="center">
-      <Formik
-        initialValues={{
-          email: '',
-          password: '',
-        }}
-        onSubmit={(values, { setSubmitting, setErrors }) => {
-          login(values)
-            .then(({ user }) => {
-              localStorage.setItem(
-                'userInfo',
-                JSON.stringify({ email: values.email, password: values.password, token: user.token }).toString()
-              );
-              getProfile(user).then(({ image }) => {
-                setUser(_.omit(user, ['token']), image);
-                history.replace(hrefHomePage);
-              });
-            })
-            .catch((error) => setErrors(errorFromApiToForm(error)));
-
-          setSubmitting(false);
-        }}
-      >
-        {({ isSubmitting, errors }) => (
-          <Form>
-            <Row className="form__title" justify="center">
-              Sign in
-            </Row>
-            {errors.errorUnknown && ErrorText(errors.errorUnknown)}
-            <ErrorMessage name="email" render={(msg) => ErrorText(msg)} />
-            <Row gutter={[0, 18]}>
-              <Col span={24}>
-                <label htmlFor="email" className="form__label">
-                  Email address:{' '}
-                </label>
-                <Field as={Input} type="email" name="email" placeholder="Email address" />
-              </Col>
-            </Row>
-            <Row gutter={[0, 18]}>
-              <Col span={24}>
-                <label htmlFor="password" className="form__label">
-                  Password:{' '}
-                </label>
-                <Field as={Input.Password} name="password" placeholder="Password" />
-              </Col>
-            </Row>
-            <Row gutter={[0, 18]}>
-              <Col span={24}>
-                <Button htmlType="submit" type="primary" disabled={isSubmitting} block className="submitButton">
-                  Login
-                </Button>
-              </Col>
-            </Row>
-            <Row gutter={[0, 18]} justify="center">
-              <span className="form__question">Don`t have an account?&nbsp;</span>
-              <Link to={hrefSignup}>Sign Up.</Link>
-            </Row>
-          </Form>
-        )}
-      </Formik>
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <Row className="form__title" justify="center">
+          Sign in
+        </Row>
+        <Row gutter={[0, 18]}>
+          <Col span={24}>
+            {errors.email && ErrorText(errors.email.message)}
+            <label htmlFor="email" className="form__label">
+              Email address:{' '}
+            </label>
+            <Controller
+              as={Input}
+              name="email"
+              control={control}
+              defaultValue=""
+              placeholder="Email address"
+              type="email"
+            />
+          </Col>
+        </Row>
+        <Row gutter={[0, 18]}>
+          <Col span={24}>
+            <label htmlFor="password" className="form__label">
+              Password:{' '}
+            </label>
+            <Controller
+              as={Input}
+              name="password"
+              control={control}
+              defaultValue=""
+              placeholder="Password"
+              type="password"
+            />
+          </Col>
+        </Row>
+        <Row gutter={[0, 18]}>
+          <Col span={24}>
+            {isFetching ? (
+              <span>Please waiting...</span>
+            ) : (
+              <Button htmlType="submit" type="primary" block className="submitButton">
+                Login
+              </Button>
+            )}
+          </Col>
+        </Row>
+        <Row gutter={[0, 18]} justify="center">
+          <span className="form__question">Don`t have an account?&nbsp;</span>
+          <Link to={hrefSignup}>Sign Up.</Link>
+        </Row>
+      </form>
     </Row>
   );
 };
 
-export default connect(null, mapDispatchToProps)(Login);
+export default connect(mapStateToProps, mapDispatchToProps)(Login);
 
 Login.propTypes = {
   history: PropTypes.shape({ replace: PropTypes.func }),

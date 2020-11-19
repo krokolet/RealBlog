@@ -7,6 +7,9 @@ import {
   SET_CURRENT_ARTICLE,
   DEL_CURRENT_ARTICLE,
   SET_CURRENT_PAGE,
+  FETCH_STARTED,
+  FETCH_FAILURE,
+  FETCH_SUCCESS,
 } from './actions';
 
 const defaultUser = {
@@ -80,12 +83,31 @@ const currentArticle = (article = defaultArticle, action) => {
   }
 };
 
+const defaultFetchStatus = {
+  isFetching: false,
+  errorsFetching: null,
+};
+
+const fetchStatus = (status = defaultFetchStatus, action) => {
+  switch (action.type) {
+    case FETCH_STARTED:
+      return { ...status, isFetching: true };
+    case FETCH_SUCCESS:
+      return { isFetching: false, errorsFetching: action.errors };
+    case FETCH_FAILURE:
+      return { isFetching: false, errorsFetching: action.errors };
+    default:
+      return status;
+  }
+};
+
 const reducer = combineReducers({
   userInfo,
   articlesList,
   articlesCount,
   currentArticle,
   currentPage,
+  fetchStatus,
 });
 
 export default reducer;
