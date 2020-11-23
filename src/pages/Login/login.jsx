@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { connect } from 'react-redux';
 import { Button, Row, Col, Input } from 'antd';
@@ -16,32 +16,21 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-const mapStateToProps = ({ fetchStatus: { isFetching, errorsFetching } }) => {
-  return { isFetching, errorsFetching };
+const mapStateToProps = ({ fetchStatus: { isFetching, errorsFetching, isFetchSuccess } }) => {
+  return { isFetching, errorsFetching, isFetchSuccess };
 };
 
-const Login = ({ loginUser, history, isFetching, errorsFetching }) => {
-  useEffect(() => {
-    if (errorsFetching && !Object.keys(errors).length) {
-      Object.entries(errorsFetching).map((error) => setError(error[0], { message: error[1] }));
-    }
-  });
+const Login = ({ loginUser, history, isFetching, errorsFetching, isFetchSuccess }) => {
+  const { handleSubmit, control, setError, formState } = useForm();
 
-  const { handleSubmit, control, setError, clearErrors, formState } = useForm();
+  const { errors } = formState;
 
-  const { touched, errors } = formState;
-  /*
-  if (Object.keys(touched).length && Object.keys(errors).length) {
-    clearErrors();}
-*/
-  /*
   if (errorsFetching && !Object.keys(errors).length) {
     Object.entries(errorsFetching).map((error) => setError(error[0], { message: error[1] }));
   }
-*/
+
   const onSubmit = (values) => {
-    loginUser(values).then(() => history.replace(hrefHomePage));
-    console.log(errors);
+    loginUser(values).then(() => (isFetchSuccess ? history.replace(hrefHomePage) : null));
   };
 
   return (
@@ -105,7 +94,10 @@ export default connect(mapStateToProps, mapDispatchToProps)(Login);
 
 Login.propTypes = {
   history: PropTypes.shape({ replace: PropTypes.func }),
-  setUser: PropTypes.func.isRequired,
+  isFetching: PropTypes.bool.isRequired,
+  isFetchSuccess: PropTypes.bool.isRequired,
+  errorsFetching: PropTypes.bool.isRequired,
+  loginUser: PropTypes.func.isRequired,
 };
 
 Login.defaultProps = {

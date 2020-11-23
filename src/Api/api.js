@@ -94,7 +94,7 @@ class API {
     return this.sendInfo(userPath, 'put', user);
   };
 
-  login = (values) => {
+  sendLogin = (values) => {
     return this.sendInfo(loginPath, 'post', { user: values });
   };
 

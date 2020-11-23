@@ -1,7 +1,7 @@
 import API from '../Api/api';
 import errorFromApiToForm from '../Api/errorFromApiToForm';
 
-const { login, getProfile } = new API();
+const { sendLogin, getProfile } = new API();
 
 export const SET_USER = 'SET_USER';
 export const LOAD_ARTICLES = 'LOAD_ARTICLES';
@@ -27,7 +27,6 @@ const fetchStarted = () => ({
 
 const fetchSuccess = () => ({
   type: FETCH_SUCCESS,
-  errors: null,
 });
 
 const fetchFailure = (errors) => {
@@ -40,7 +39,7 @@ const fetchFailure = (errors) => {
 export const loginUser = (values) => {
   return (dispatch) => {
     dispatch(fetchStarted());
-    return login(values)
+    return sendLogin(values)
       .then(({ user }) => {
         localStorage.setItem(
           'userInfo',
@@ -53,7 +52,6 @@ export const loginUser = (values) => {
       })
       .catch(({ status, data: { errors } }) => {
         dispatch(fetchFailure(errorFromApiToForm(status, errors)));
-        throw errors;
       });
   };
 };

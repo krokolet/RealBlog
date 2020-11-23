@@ -86,16 +86,17 @@ const currentArticle = (article = defaultArticle, action) => {
 const defaultFetchStatus = {
   isFetching: false,
   errorsFetching: null,
+  isFetchSuccess: false,
 };
 
 const fetchStatus = (status = defaultFetchStatus, action) => {
   switch (action.type) {
     case FETCH_STARTED:
-      return { ...status, isFetching: true };
+      return { isFetching: true, isFetchSuccess: false, errorsFetching: null };
     case FETCH_SUCCESS:
-      return { isFetching: false, errorsFetching: action.errors };
+      return { ...status, isFetching: false, isFetchSuccess: true };
     case FETCH_FAILURE:
-      return { isFetching: false, errorsFetching: action.errors };
+      return { isFetching: false, isFetchSuccess: false, errorsFetching: action.errors };
     default:
       return status;
   }
