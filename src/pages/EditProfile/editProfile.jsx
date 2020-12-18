@@ -1,131 +1,135 @@
-import React, { useState } from 'react';
+import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
-import { Formik, Form, Field, ErrorMessage } from 'formik';
-import { Button, Row, Col, Input, Result } from 'antd';
+import { useForm, Controller } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { Button, Row, Col, Input } from 'antd';
 import PropTypes from 'prop-types';
 import * as _ from 'lodash';
 import { Redirect } from 'react-router-dom';
 import * as actions from '../../store/actions';
 
-import errorFromApiToForm from '../../Api/errorFromApiToForm';
 import ErrorText from '../../components/ErrorText/errorText';
 import '../formStyle.scss';
 import EditProfileSchema from './editProfileSchema';
 import { hrefHomePage } from '../../Api/linksToPages';
-import API from '../../Api/api';
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    setUser: (user) => dispatch(actions.setUser(user)),
+    editUserProfile: (user) => dispatch(actions.editUserProfile(user)),
   };
 };
 
-const mapStateToProps = ({ userInfo }) => {
+const mapStateToProps = ({ userInfo, fetchStatus: { isFetching, errorsFetching, isFetchSuccess } }) => {
   return {
     userInfo,
+    isFetching,
+    errorsFetching,
+    isFetchSuccess,
   };
 };
 
-const { editProfile } = new API();
+const EditProfile = ({ userInfo, editUserProfile, isFetching, errorsFetching, isFetchSuccess }) => {
+  const { handleSubmit, control, setError, formState } = useForm({
+    reValidateMode: 'onChange',
+    resolver: yupResolver(EditProfileSchema),
+  });
+  const { errors, isSubmitted } = formState;
 
-const EditProfile = ({ userInfo, setUser }) => {
-  const [sendResult, setSendResult] = useState('');
-  if (!userInfo.username) {
+  const { username, email, image } = userInfo;
+
+  useEffect(() => {
+    if (errorsFetching && !Object.keys(errors).length) {
+      Object.entries(errorsFetching).map((error) => setError(error[0], { message: error[1] }));
+    }
+  }, [errors, errorsFetching, isFetchSuccess, isSubmitted, setError, username]);
+
+  const onSubmit = (values) => {
+    const normalizeValues = _.omitBy(values, (value) => value === '');
+    editUserProfile(normalizeValues);
+  };
+
+  if (!localStorage.getItem('userInfo')) {
     return <Redirect to={hrefHomePage} />;
   }
+
+  const { password } = JSON.parse(localStorage.getItem('userInfo'));
+
   return (
     <Row className="formWrapper" justify="center">
-      <Formik
-        initialValues={{
-          username: userInfo.username,
-          email: userInfo.email,
-          password: '',
-          image: userInfo.image || '',
-        }}
-        validationSchema={EditProfileSchema}
-        onSubmit={(values, { setSubmitting, setErrors }) => {
-          const normalizeValues = _.omitBy(values, (value) => value === '');
-          if (!_.values(normalizeValues).length) {
-            setErrors({ errorUnknown: 'At least one field required.' });
-            setSubmitting(false);
-            return;
-          }
-          editProfile(normalizeValues)
-            .then(({ user }) => {
-              const { password } = localStorage.getItem('userInfo');
-              localStorage.setItem(
-                'userInfo',
-                JSON.stringify({
-                  email: user.email,
-                  password: values.password || password,
-                  token: user.token,
-                }).toString()
-              );
-              setUser(_.omit(user), ['token']);
-              setSendResult(user);
-            })
-            .catch((error) => {
-              setErrors(errorFromApiToForm(error));
-            });
-          setSubmitting(false);
-        }}
-      >
-        {({ isSubmitting, errors }) =>
-          sendResult ? (
-            <Result status="success" extra={[<span> Profile edited !</span>]} />
-          ) : (
-            <Form>
-              <Row className="form_title" justify="center">
-                Edit profile
-              </Row>
-              {errors.errorUnknown && ErrorText(errors.errorUnknown)}
-              <Row gutter={[0, 18]}>
-                <Col span={24}>
-                  <label htmlFor="username" className="form_label">
-                    Username:{' '}
-                  </label>
-                  <Field as={Input} name="username" />
-                  <ErrorMessage name="username" render={(msg) => ErrorText(msg)} />
-                </Col>
-              </Row>
-              <Row gutter={[0, 18]}>
-                <Col span={24}>
-                  <label htmlFor="email" className="form_label">
-                    Email address:{' '}
-                  </label>
-                  <Field as={Input} type="email" name="email" />
-                  <ErrorMessage name="email" render={(msg) => ErrorText(msg)} />
-                </Col>
-              </Row>
-              <Row gutter={[0, 18]}>
-                <Col span={24}>
-                  <label htmlFor="password" className="form_label">
-                    New password:{' '}
-                  </label>
-                  <Field as={Input.Password} name="password" placeholder="New password" />
-                  <ErrorMessage name="password" render={(msg) => ErrorText(msg)} />
-                </Col>
-              </Row>
-              <Row gutter={[0, 18]}>
-                <Col span={24}>
-                  <label htmlFor="image" className="form_label">
-                    Image:{' '}
-                  </label>
-                  <Field as={Input} name="image" placeholder="Avatar image" />
-                  <ErrorMessage name="image" render={(msg) => ErrorText(msg)} />
-                </Col>
-              </Row>
-              <Row gutter={[0, 18]}>
-                <Col span={24}>
-                  <Button htmlType="submit" type="primary" disabled={isSubmitting} block className="submitButton">
-                    Save
-                  </Button>
-                </Col>
-              </Row>
-            </Form>
-          )
-        }
-      </Formik>
+      {isFetchSuccess && isSubmitted ? (
+        <Redirect to={hrefHomePage} />
+      ) : (
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <Row className="form_title" justify="center">
+            Edit profile
+          </Row>
+          {errors.errorUnknown && ErrorText(errors.errorUnknown)}
+          <Row gutter={[0, 18]}>
+            <Col span={24}>
+              <label htmlFor="username" className="form_label">
+                Username:{' '}
+              </label>
+
+              <Controller as={Input} name="username" control={control} defaultValue={username} />
+              {errors.username && ErrorText(errors.username.message)}
+            </Col>
+          </Row>
+          <Row gutter={[0, 18]}>
+            <Col span={24}>
+              <label htmlFor="email" className="form_label">
+                Email address:{' '}
+              </label>
+
+              <Controller as={Input} name="email" control={control} defaultValue={email} type="email" />
+              {errors.email && ErrorText(errors.email.message)}
+            </Col>
+          </Row>
+          <Row gutter={[0, 18]}>
+            <Col span={24}>
+              <label htmlFor="password" className="form_label">
+                New password:{' '}
+              </label>
+
+              <Controller
+                as={Input}
+                name="password"
+                control={control}
+                type="password"
+                defaultValue={password}
+                placeholder="New password"
+              />
+              {errors.password && ErrorText(errors.password.message)}
+            </Col>
+          </Row>
+          <Row gutter={[0, 18]}>
+            <Col span={24}>
+              <label htmlFor="image" className="form_label">
+                Image:{' '}
+              </label>
+              {errors.image && ErrorText(errors.image.message)}
+              <Controller
+                as={Input}
+                name="image"
+                control={control}
+                defaultValue={image || ''}
+                type="url"
+                placeholder="Avatar image"
+              />
+            </Col>
+          </Row>
+          <Row gutter={[0, 18]}>
+            <Col span={24}>
+              {isFetching ? (
+                <span>Please wait...</span>
+              ) : (
+                <Button htmlType="submit" type="primary" block className="submitButton">
+                  Save
+                </Button>
+              )}
+            </Col>
+          </Row>
+        </form>
+      )}
     </Row>
   );
 };
@@ -139,9 +143,13 @@ EditProfile.propTypes = {
     email: PropTypes.string,
     bio: PropTypes.string,
   }),
-  setUser: PropTypes.func.isRequired,
+  editUserProfile: PropTypes.func.isRequired,
+  isFetching: PropTypes.bool.isRequired,
+  isFetchSuccess: PropTypes.bool.isRequired,
+  errorsFetching: PropTypes.shape({}),
 };
 
 EditProfile.defaultProps = {
   userInfo: undefined,
+  errorsFetching: null,
 };

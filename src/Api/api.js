@@ -2,7 +2,6 @@ import axios from 'axios';
 import {
   loginPath,
   profilePath,
-  articlesPath,
   toggleArticleFavoritePath,
   deleteArticlePath,
   addArticlePath,
@@ -60,21 +59,15 @@ class API {
     }
   };
 
-  postArticle = (article) => {
+  sendArticle = (article) => {
     return this.sendInfo(addArticlePath, 'post', article);
   };
 
-  editArticle = (slug, article) => {
+  sendEditedArticle = (slug, article) => {
     return this.sendInfo(`${addArticlePath}/${slug}`, 'put', article);
   };
 
-  loadSingleArticle = (slug) => {
-    return this.getResourse(`${articlesPath}/${slug}`, {
-      headers: this.reqHeaders(),
-    });
-  };
-
-  deleteArticle = async (slug) => {
+  sendDeleteArticle = async (slug) => {
     return this.sendInfo(`${deleteArticlePath}/${slug}`, 'delete');
   };
 
@@ -82,15 +75,15 @@ class API {
     return this.sendInfo(`${profilePath}/${user.username}`, 'get');
   };
 
-  setLike = (slug) => {
+  sendSetLike = (slug) => {
     return this.sendInfo(`${toggleArticleFavoritePath}/${slug}/favorite`, 'post');
   };
 
-  deleteLike = (slug) => {
+  sendDeleteLike = (slug) => {
     return this.sendInfo(`${toggleArticleFavoritePath}/${slug}/favorite`, 'delete');
   };
 
-  editProfile = (user) => {
+  sendNewProfile = (user) => {
     return this.sendInfo(userPath, 'put', user);
   };
 
@@ -98,7 +91,7 @@ class API {
     return this.sendInfo(loginPath, 'post', { user: values });
   };
 
-  signUp = (values) => {
+  sendSignUp = (values) => {
     return this.sendInfo(signupPath, 'post', { user: values });
   };
 }

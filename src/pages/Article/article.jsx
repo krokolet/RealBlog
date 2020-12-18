@@ -8,28 +8,29 @@ import * as actions from '../../store/actions';
 import Like from '../../components/Like/like';
 import { hrefEditArticle, hrefHomePage } from '../../Api/linksToPages';
 import './article.scss';
-import API from '../../Api/api';
 
 const mapDispatchToProps = (dispatch) => {
   return {
     setCurrentArticle: (article) => dispatch(actions.setCurrentArticle(article)),
     delCurrentArticle: () => dispatch(actions.delCurrentArticle()),
+    deleteArticle: (slug) => dispatch(actions.deleteArticle(slug)),
   };
 };
 
-const mapStateToProps = ({ currentArticle, userInfo }) => {
+const mapStateToProps = ({ currentArticle, userInfo, articlesList }) => {
   return {
     currentArticle,
     currentUser: userInfo.username,
+    articlesList,
   };
 };
 
-const { loadSingleArticle, deleteArticle } = new API();
-
 const Article = ({
+  articlesList,
   history,
   setCurrentArticle,
   delCurrentArticle,
+  deleteArticle,
   currentArticle,
   currentUser,
   match: {
@@ -46,12 +47,9 @@ const Article = ({
   } = currentArticle;
 
   useEffect(() => {
-    loadSingleArticle(slug)
-      .then(({ article }) => setCurrentArticle(article))
-      .catch(() => {
-        history.push(hrefHomePage);
-      });
-  }, [history, setCurrentArticle, slug]);
+    setCurrentArticle(articlesList.filter((article) => article.slug === slug)[0]);
+  });
+
   return !title ? (
     <Spin tip="Loading..." />
   ) : (
@@ -107,9 +105,9 @@ const Article = ({
                       okText="Yes"
                       title="Are you sure to delete this article?"
                       onConfirm={() => {
-                        deleteArticle(slug)
-                          .then(() => delCurrentArticle())
-                          .then(() => history.push(hrefHomePage));
+                        delCurrentArticle();
+                        deleteArticle(slug);
+                        history.replace(hrefHomePage);
                       }}
                     >
                       <Button className="article_delete">Delete</Button>
@@ -158,13 +156,33 @@ Article.propTypes = {
       following: PropTypes.bool.isRequired,
     }),
   }),
-  currentUser: PropTypes.string.isRequired,
+  currentUser: PropTypes.string,
   match: PropTypes.shape({
     params: PropTypes.objectOf(PropTypes.string),
   }),
+  articlesList: PropTypes.arrayOf(
+    PropTypes.shape({
+      slug: PropTypes.string,
+      title: PropTypes.string,
+      description: PropTypes.string,
+      body: PropTypes.string,
+      tagList: PropTypes.arrayOf(PropTypes.string),
+      createdAt: PropTypes.string,
+      updatedAt: PropTypes.string,
+      favoritesCount: PropTypes.number,
+      author: PropTypes.shape({
+        username: PropTypes.string,
+        image: PropTypes.string,
+        bio: PropTypes.string,
+        following: PropTypes.bool,
+      }),
+    })
+  ).isRequired,
+  deleteArticle: PropTypes.func.isRequired,
 };
 
 Article.defaultProps = {
   currentArticle: undefined,
   match: undefined,
+  currentUser: undefined,
 };

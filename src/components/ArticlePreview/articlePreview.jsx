@@ -30,7 +30,9 @@ const ArticlePreview = ({ article }) => {
           <article>
             <Row gutter={[13, 6]} type="flex" align="middle">
               <Col className="row-gutter">
-                <h1 className="articlePreview__title">{title}</h1>
+                <Link to={`${hrefArcticles}/${slug}`} className="articlePreview__link">
+                  <h1 className="articlePreview__title">{title}</h1>
+                </Link>
               </Col>
               <Col className="row-gutter">
                 <Like slug={slug} />
@@ -44,11 +46,7 @@ const ArticlePreview = ({ article }) => {
               </Col>
             </Row>
             <Row>
-              <Col>
-                <Link to={`${hrefArcticles}/${slug}`} className="articlePreview__link">
-                  {description}
-                </Link>
-              </Col>
+              <Col>{description}</Col>
             </Row>
           </article>
         </Col>

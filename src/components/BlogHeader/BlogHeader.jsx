@@ -11,7 +11,7 @@ import API from '../../Api/api';
 import * as actions from '../../store/actions';
 
 const { Header } = Layout;
-const { login, getProfile } = new API();
+const { sendLogin, getProfile } = new API();
 
 const mapStateToProps = ({ userInfo }) => ({
   username: userInfo.username,
@@ -23,7 +23,7 @@ const mapDispatchToProps = (dispatch) => {
 
 const BlogHeader = ({ username, setUser }) => {
   if (localStorage.getItem('userInfo') && !username) {
-    login(JSON.parse(localStorage.getItem('userInfo'))).then(({ user }) =>
+    sendLogin(JSON.parse(localStorage.getItem('userInfo'))).then(({ user }) =>
       getProfile(user).then(({ image }) => {
         setUser({ ...user, image });
       })

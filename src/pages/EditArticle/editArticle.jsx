@@ -1,88 +1,91 @@
-import React, { useState } from 'react';
+import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
-import { Formik, Form } from 'formik';
-import { Col, Row, Result, Button } from 'antd';
+import { Col, Row, Button } from 'antd';
 import PropTypes from 'prop-types';
 import { Redirect } from 'react-router-dom';
-
+import { FormProvider, useForm } from 'react-hook-form';
 import '../CreateArticle/createArticle.scss';
 import ArticleForm from '../../components/ArticleForm/articleForm';
-import errorFromApiToForm from '../../Api/errorFromApiToForm';
 import ErrorText from '../../components/ErrorText/errorText';
 import { hrefHomePage } from '../../Api/linksToPages';
-import API from '../../Api/api';
+import * as actions from '../../store/actions';
 
-const mapStateToProps = ({ currentArticle, userInfo }) => {
+const mapStateToProps = ({ currentArticle, userInfo, fetchStatus: { isFetching, errorsFetching, isFetchSuccess } }) => {
   return {
     currentArticle,
     username: userInfo.username,
+    isFetching,
+    errorsFetching,
+    isFetchSuccess,
+  };
+};
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    postEditedArticle: (slug, article) => dispatch(actions.postEditedArticle(slug, article)),
   };
 };
 
 const normalizeTags = (tags) => {
-  const normalTags = tags.filter((tag) => tag.length > 0);
-  return [...normalTags];
+  if (!tags) return [];
+  return tags.filter((tag) => tag.length > 0);
 };
 
-const { editArticle } = new API();
+const EditArticle = ({ currentArticle, username, isFetching, errorsFetching, isFetchSuccess, postEditedArticle }) => {
+  const { formState, setError, ...methods } = useForm();
+  const { errors, isSubmitted } = formState;
 
-const EditArticle = ({ currentArticle, username }) => {
-  const [sendResult, setSendResult] = useState('');
+  useEffect(() => {
+    if (errorsFetching && !Object.keys(errors).length) {
+      Object.entries(errorsFetching).map((error) => setError(error[0], { message: error[1] }));
+    }
+  }, [errors, errorsFetching, isFetchSuccess, isSubmitted, setError]);
+
   if (!username) {
     return <Redirect to={hrefHomePage} />;
   }
-  const initValues = {
-    title: currentArticle.title,
-    description: currentArticle.description,
-    body: currentArticle.body,
-    tagList: currentArticle.tagList,
+
+  const onSubmit = (values) => {
+    postEditedArticle(currentArticle.slug, {
+      article: { ...values, tagList: normalizeTags(values.tagList) },
+    });
   };
 
   return (
-    <Row className="newArticle" justify="center">
-      <Col span={24}>
-        <Row justify="center">
-          <h1 className="newArticle__title">Edit article</h1>
-        </Row>
-        <Row justify="center">
-          <Formik
-            initialValues={initValues}
-            onSubmit={(values, { setSubmitting, setErrors }) => {
-              editArticle(currentArticle.slug, {
-                article: { ...values, tags: [normalizeTags(values.tagList)] },
-              })
-                .then((response) => {
-                  setSendResult(response);
-                })
-                .catch((error) => setErrors(errorFromApiToForm(error)));
-              setSubmitting(false);
-            }}
-          >
-            {({ isSubmitting, errors }) =>
-              sendResult ? (
-                <Result status="success" extra={[<span> Articale sent !</span>]} />
-              ) : (
-                <Form className="newArticle__form">
-                  {errors.errorUnknown && ErrorText(errors.errorUnknown)}
-                  {ArticleForm(errors)}
-                  <Row justify="begin">
-                    <Col span={8}>
-                      <Button htmlType="submit" type="primary" disabled={isSubmitting} block className="submitButton">
+    <FormProvider {...methods}>
+      <Row className="newArticle" justify="center">
+        {isFetchSuccess && isSubmitted ? (
+          <Redirect to={hrefHomePage} />
+        ) : (
+          <Col span={24}>
+            <Row justify="center">
+              <h1 className="newArticle__title">Edit article</h1>
+            </Row>
+            <Row justify="center">
+              <form className="newArticle__form" onSubmit={methods.handleSubmit(onSubmit)}>
+                {errors.errorUnknown && ErrorText(errors.errorUnknown)}
+                <ArticleForm currentArticle={currentArticle} />
+                <Row justify="begin">
+                  <Col span={8}>
+                    {isFetching ? (
+                      <span>Please wait...</span>
+                    ) : (
+                      <Button htmlType="submit" type="primary" block className="submitButton">
                         Send
                       </Button>
-                    </Col>
-                  </Row>
-                </Form>
-              )
-            }
-          </Formik>
-        </Row>
-      </Col>
-    </Row>
+                    )}
+                  </Col>
+                </Row>
+              </form>
+            </Row>
+          </Col>
+        )}
+      </Row>
+    </FormProvider>
   );
 };
 
-export default connect(mapStateToProps)(EditArticle);
+export default connect(mapStateToProps, mapDispatchToProps)(EditArticle);
 
 EditArticle.propTypes = {
   currentArticle: {
@@ -100,6 +103,15 @@ EditArticle.propTypes = {
       bio: PropTypes.string,
       following: PropTypes.bool,
     },
-  }.isRequired,
+  },
   username: PropTypes.string.isRequired,
+  isFetching: PropTypes.bool.isRequired,
+  isFetchSuccess: PropTypes.bool.isRequired,
+  errorsFetching: PropTypes.shape({}),
+  postEditedArticle: PropTypes.func.isRequired,
+};
+
+EditArticle.defaultProps = {
+  errorsFetching: null,
+  currentArticle: undefined,
 };

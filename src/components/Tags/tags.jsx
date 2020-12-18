@@ -1,37 +1,69 @@
-import React from 'react';
-import { Col, Row, Input, Button } from 'antd';
-import { Field } from 'formik';
-import PropTypes from 'prop-types';
+import React, { useState, useEffect } from 'react';
+import { useFormContext } from 'react-hook-form';
+import { Col, Row, Button } from 'antd';
 
 import './tags.scss';
 
-const renderTags = (tagsLength, tag, index, remove) => {
-  return (
-    <Row gutter={[0, 16]} key={`${index}`}>
-      <Col flex={12}>
-        <Field as={Input} name={`tagList.${index}`} placeholder="Tag" className="tag__field" />
-      </Col>
-      <Col flex={2}>
-        <Row justify="center">
-          <Button className="tag__btn--red" onClick={() => remove(index)}>
-            Delete
-          </Button>
-        </Row>
-      </Col>
-    </Row>
-  );
-};
+const Tags = (tagList) => {
+  const { register } = useFormContext();
 
-const Tags = ({ push, form, remove }) => {
-  const { tagList } = form.values;
+  const [tagsId, setTagsId] = useState([]);
+
+  useEffect(() => {
+    if (tagList.length) {
+      const newIdList = tagList.map((item, i) => i);
+      setTagsId(newIdList);
+    }
+  }, [tagList]);
+
+  const addTag = () => {
+    setTagsId((prev) => {
+      const newId = prev.length ? prev[prev.length - 1] + 1 : 0;
+      return [...prev, newId];
+    });
+  };
+
+  const delTag = (id) => {
+    const filteredTags = tagsId.filter((item) => item !== id);
+    setTagsId(filteredTags);
+  };
+
+  const renderTag = (id) => {
+    const tagValue = tagList.length ? tagList[id] : null;
+    return (
+      <Row gutter={[0, 16]} key={id}>
+        <Col flex={12}>
+          <input
+            id={id}
+            ref={register()}
+            name={`tagList[${id}]`}
+            placeholder="Tag"
+            className="tag__field"
+            defaultValue={tagValue}
+          />
+        </Col>
+        <Col flex={2}>
+          <Row justify="center">
+            <Button className="tag__btn--red" onClick={() => delTag(id)}>
+              Delete
+            </Button>
+          </Row>
+        </Col>
+      </Row>
+    );
+  };
+
   return (
     <Row className="tag">
-      {tagList.length ? (
-        <Col span={12}>{tagList.map((tag, index, array) => renderTags(array.length, tag, index, remove))}</Col>
-      ) : null}
+      {tagsId.length ? <Col span={12}>{tagsId.map((id) => renderTag(id))}</Col> : null}
       <Row gutter={[0, 18]} align="bottom">
         <Col className="row-gutter">
-          <Button className="tag__btn--blue" onClick={() => push('')}>
+          <Button
+            className="tag__btn--blue"
+            onClick={() => {
+              addTag();
+            }}
+          >
             Add tag
           </Button>
         </Col>
@@ -41,13 +73,3 @@ const Tags = ({ push, form, remove }) => {
 };
 
 export default Tags;
-
-Tags.propTypes = {
-  push: PropTypes.func.isRequired,
-  remove: PropTypes.func.isRequired,
-  form: PropTypes.shape({ values: PropTypes.shape({ tagList: PropTypes.arrayOf(PropTypes.string) }) }),
-};
-
-Tags.defaultProps = {
-  form: undefined,
-};

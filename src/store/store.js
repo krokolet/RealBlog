@@ -2,7 +2,7 @@ import { combineReducers } from 'redux';
 
 import {
   SET_USER,
-  LOAD_ARTICLES,
+  SET_ARTICLES,
   SET_ARTICLE_COUNT,
   SET_CURRENT_ARTICLE,
   DEL_CURRENT_ARTICLE,
@@ -15,7 +15,6 @@ import {
 const defaultUser = {
   email: '',
   username: '',
-  bio: '',
   image: '',
 };
 
@@ -25,7 +24,6 @@ const userInfo = (state = defaultUser, { type, user }) => {
       return {
         email: user.email,
         username: user.username,
-        bio: user.bio,
         image: user.image,
       };
     default:
@@ -35,8 +33,8 @@ const userInfo = (state = defaultUser, { type, user }) => {
 
 const articlesList = (articles = [], action) => {
   switch (action.type) {
-    case LOAD_ARTICLES:
-      return action.articles;
+    case SET_ARTICLES:
+      return action.payload;
     default:
       return articles;
   }

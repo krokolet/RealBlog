@@ -1,11 +1,14 @@
 import React from 'react';
-import { ErrorMessage, Field, FieldArray } from 'formik';
+import { Controller, useFormContext } from 'react-hook-form';
+import PropTypes from 'prop-types';
 import { Col, Input, Row } from 'antd';
 import Tags from '../Tags/tags';
 import './articleForm.scss';
 import ErrorText from '../ErrorText/errorText';
 
-const ArticleForm = () => {
+const ArticleForm = ({ currentArticle }) => {
+  const { errors, control } = useFormContext();
+  const { title, body, description, tagList } = currentArticle;
   return (
     <>
       <Row gutter={[0, 24]}>
@@ -13,8 +16,8 @@ const ArticleForm = () => {
           <label htmlFor="title" className="article__label">
             Title:{' '}
           </label>
-          <Field as={Input} name="title" placeholder="Title" />
-          <ErrorMessage name="title" render={(msg) => ErrorText(msg)} />
+          <Controller as={Input} name="title" control={control} defaultValue={title} />
+          {errors.title && ErrorText(errors.title.message)}
         </Col>
       </Row>
       <Row gutter={[0, 24]}>
@@ -22,8 +25,8 @@ const ArticleForm = () => {
           <label htmlFor="description" className="article__label">
             Short description:{' '}
           </label>
-          <Field as={Input} name="description" placeholder="Description" />
-          <ErrorMessage name="description" render={(msg) => ErrorText(msg)} />
+          <Controller as={Input} name="description" control={control} defaultValue={description} />
+          {errors.description && ErrorText(errors.description.message)}
         </Col>
       </Row>
       <Row gutter={[0, 24]}>
@@ -31,8 +34,8 @@ const ArticleForm = () => {
           <label htmlFor="body" className="article__label">
             Text:{' '}
           </label>
-          <Field as={Input.TextArea} name="body" placeholder="Text" />
-          <ErrorMessage name="body" render={(msg) => ErrorText(msg)} />
+          <Controller as={Input} name="body" control={control} defaultValue={body} />
+          {errors.body && ErrorText(errors.body.message)}
         </Col>
       </Row>
       <Row gutter={[0, 24]}>
@@ -40,7 +43,7 @@ const ArticleForm = () => {
           <label htmlFor="tagList" className="article__label">
             Tags:{' '}
           </label>
-          <FieldArray name="tagList" component={Tags} />
+          {Tags(tagList)}
         </Col>
       </Row>
     </>
@@ -48,3 +51,21 @@ const ArticleForm = () => {
 };
 
 export default ArticleForm;
+
+ArticleForm.propTypes = {
+  currentArticle: PropTypes.shape({
+    title: PropTypes.string,
+    description: PropTypes.string,
+    body: PropTypes.string,
+    tagList: PropTypes.arrayOf(PropTypes.string),
+  }),
+};
+
+ArticleForm.defaultProps = {
+  currentArticle: {
+    title: '',
+    description: '',
+    body: '',
+    tagList: [],
+  },
+};
