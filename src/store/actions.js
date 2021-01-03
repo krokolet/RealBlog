@@ -10,6 +10,7 @@ const {
   sendArticle,
   sendEditedArticle,
   sendSignUp,
+  getSingleArticle,
 } = new API();
 
 export const SET_USER = 'SET_USER';
@@ -185,6 +186,27 @@ export const signUpUser = (values) => {
         dispatch(setUser({ email: user.email, username: user.username, image: user.image }));
       })
       .catch(({ status, data: { errors } }) => {
+        dispatch(fetchFailure(errorFromApiToForm(status, errors)));
+      });
+  };
+};
+
+export const loadArticle = (slug) => {
+  return (dispatch) => {
+    dispatch(fetchStarted());
+    return getSingleArticle(slug)
+      .then(({ article }) => {
+        dispatch(fetchSuccess());
+        dispatch(setCurrentArticle(article));
+      })
+      .catch((err) => {
+        if (!err) {
+          dispatch(fetchFailure('No connection'));
+        }
+        const {
+          status,
+          data: { errors },
+        } = err;
         dispatch(fetchFailure(errorFromApiToForm(status, errors)));
       });
   };

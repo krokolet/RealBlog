@@ -18,6 +18,8 @@ const ArticlePreview = ({ article }) => {
     tagList,
     createdAt,
     author: { username, image },
+    favorited,
+    favoritesCount,
   } = article;
 
   const createdTimeAgo = {
@@ -35,7 +37,7 @@ const ArticlePreview = ({ article }) => {
                 </Link>
               </Col>
               <Col className="row-gutter">
-                <Like slug={slug} />
+                <Like slug={slug} favorited={favorited} favoritesCount={favoritesCount} />
               </Col>
             </Row>
             <Row gutter={[13, 6]}>
@@ -82,6 +84,7 @@ ArticlePreview.propTypes = {
     createdAt: PropTypes.string,
     updatedAt: PropTypes.string,
     favoritesCount: PropTypes.number,
+    favorited: PropTypes.bool,
     author: PropTypes.shape({
       username: PropTypes.string,
       image: PropTypes.string,

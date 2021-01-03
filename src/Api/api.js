@@ -94,6 +94,10 @@ class API {
   sendSignUp = (values) => {
     return this.sendInfo(signupPath, 'post', { user: values });
   };
+
+  getSingleArticle = (slug) => {
+    return this.sendInfo(`${addArticlePath}/${slug}`, 'get');
+  };
 }
 
 export default API;

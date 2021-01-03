@@ -5,6 +5,7 @@ import './App.scss';
 import { Layout } from 'antd';
 import { Route, Switch, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
 
 import Login from './pages/Login/login';
 import SignUp from './pages/SignUp/signup';
@@ -27,23 +28,37 @@ import {
 
 const { Content } = Layout;
 
-const App = () => {
+const mapStateToProps = ({ fetchStatus: { errorsFetching } }) => {
+  return { errorsFetching };
+};
+
+const App = ({ errorsFetching }) => {
   return (
     <Layout className="wrapper">
-      <BlogHeader />
-      <Content>
-        <Switch>
-          <Route exact path={hrefHomePage} component={Homepage} />
-          <Route path={hrefLogin} component={Login} />
-          <Route path={hrefSignup} component={SignUp} />
-          <Route exact path={`${hrefArcticles}/:slug`} component={Article} />
-          <Route path={hrefCreateArcticle} render={() => <CreateArticle />} />
-          <Route path={`${hrefEditArticle}/:slug/edit`} render={({ match }) => <EditArticle match={match} />} />
-          <Route path={hrefEditProfile} render={() => <EditProfile />} />
-        </Switch>
-      </Content>
+      {errorsFetching === 'No connection' ? (
+        <span>No connection</span>
+      ) : (
+        <>
+          <BlogHeader />
+          <Content>
+            <Switch>
+              <Route exact path={hrefHomePage} component={Homepage} />
+              <Route path={hrefLogin} component={Login} />
+              <Route path={hrefSignup} component={SignUp} />
+              <Route exact path={`${hrefArcticles}/:slug`} component={Article} />
+              <Route path={hrefCreateArcticle} render={() => <CreateArticle />} />
+              <Route path={`${hrefEditArticle}/:slug/edit`} render={({ match }) => <EditArticle match={match} />} />
+              <Route path={hrefEditProfile} render={() => <EditProfile />} />
+            </Switch>
+          </Content>
+        </>
+      )}
     </Layout>
   );
 };
 
-export default withRouter(connect()(App));
+export default withRouter(connect(mapStateToProps)(App));
+
+App.propTypes = {
+  errorsFetching: PropTypes.arrayOf({}).isRequired,
+};

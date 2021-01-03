@@ -11,6 +11,7 @@ import './article.scss';
 
 const mapDispatchToProps = (dispatch) => {
   return {
+    loadArticle: (slug) => dispatch(actions.loadArticle(slug)),
     setCurrentArticle: (article) => dispatch(actions.setCurrentArticle(article)),
     delCurrentArticle: () => dispatch(actions.delCurrentArticle()),
     deleteArticle: (slug) => dispatch(actions.deleteArticle(slug)),
@@ -26,8 +27,9 @@ const mapStateToProps = ({ currentArticle, userInfo, articlesList }) => {
 };
 
 const Article = ({
-  articlesList,
   history,
+  loadArticle,
+  articlesList,
   setCurrentArticle,
   delCurrentArticle,
   deleteArticle,
@@ -44,11 +46,17 @@ const Article = ({
     tagList,
     createdAt,
     author: { username, image },
+    favorited,
+    favoritesCount,
   } = currentArticle;
 
   useEffect(() => {
-    setCurrentArticle(articlesList.filter((article) => article.slug === slug)[0]);
-  });
+    if (articlesList.length) {
+      setCurrentArticle(articlesList.filter((article) => article.slug === slug)[0]);
+    } else if (!title) {
+      loadArticle(slug);
+    }
+  }, [articlesList, setCurrentArticle, slug, title, loadArticle]);
 
   return !title ? (
     <Spin tip="Loading..." />
@@ -63,7 +71,7 @@ const Article = ({
                   <h1 className="article_title">{title}</h1>
                 </Col>
                 <Col className="row-gutter">
-                  <Like slug={slug} />
+                  <Like slug={slug} favorited={favorited} favoritesCount={favoritesCount} />
                 </Col>
               </Row>
               <Row gutter={[13, 6]}>
@@ -138,6 +146,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(Article);
 
 Article.propTypes = {
   history: { ...PropTypes.object }.isRequired,
+  loadArticle: PropTypes.func.isRequired,
   setCurrentArticle: PropTypes.func.isRequired,
   delCurrentArticle: PropTypes.func.isRequired,
   currentArticle: PropTypes.shape({
@@ -149,13 +158,14 @@ Article.propTypes = {
     createdAt: PropTypes.string.isRequired,
     updatedAt: PropTypes.string,
     favoritesCount: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
+    favorited: PropTypes.bool,
     author: PropTypes.shape({
       username: PropTypes.string.isRequired,
       image: PropTypes.string,
       bio: PropTypes.string,
       following: PropTypes.bool.isRequired,
     }),
-  }),
+  }).isRequired,
   currentUser: PropTypes.string,
   match: PropTypes.shape({
     params: PropTypes.objectOf(PropTypes.string),
@@ -182,7 +192,6 @@ Article.propTypes = {
 };
 
 Article.defaultProps = {
-  currentArticle: undefined,
   match: undefined,
   currentUser: undefined,
 };

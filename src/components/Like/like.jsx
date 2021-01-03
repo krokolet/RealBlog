@@ -18,9 +18,7 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-const Like = ({ slug, username, articlesList, setLike, deleteLike, isFetching }) => {
-  const { favorited, favoritesCount } = articlesList.filter((article) => article.slug === slug)[0];
-
+const Like = ({ slug, username, setLike, deleteLike, isFetching, favorited, favoritesCount }) => {
   const toggleLike = () => {
     if (isFetching) return;
     if (favorited) {
@@ -47,24 +45,8 @@ export default connect(mapStateToProps, mapDispatchToProps)(Like);
 Like.propTypes = {
   username: PropTypes.string,
   slug: PropTypes.string.isRequired,
-  articlesList: PropTypes.arrayOf(
-    PropTypes.shape({
-      slug: PropTypes.string,
-      title: PropTypes.string,
-      description: PropTypes.string,
-      body: PropTypes.string,
-      tagList: PropTypes.arrayOf(PropTypes.string),
-      createdAt: PropTypes.string,
-      updatedAt: PropTypes.string,
-      favoritesCount: PropTypes.number,
-      author: PropTypes.shape({
-        username: PropTypes.string,
-        image: PropTypes.string,
-        bio: PropTypes.string,
-        following: PropTypes.bool,
-      }),
-    })
-  ).isRequired,
+  favoritesCount: PropTypes.number.isRequired,
+  favorited: PropTypes.bool.isRequired,
   setLike: PropTypes.func.isRequired,
   deleteLike: PropTypes.func.isRequired,
   isFetching: PropTypes.bool.isRequired,
