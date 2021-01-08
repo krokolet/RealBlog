@@ -56,9 +56,5 @@ export default connect(mapStateToProps, mapDispatchToProps)(HeaderLoginedUsers);
 HeaderLoginedUsers.propTypes = {
   username: PropTypes.string.isRequired,
   logoutUser: PropTypes.func.isRequired,
-  userImage: PropTypes.string,
-};
-
-HeaderLoginedUsers.defaultProps = {
-  userImage: undefined,
+  userImage: PropTypes.string.isRequired,
 };

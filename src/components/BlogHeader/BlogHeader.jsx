@@ -1,35 +1,37 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { Row, Col, Layout } from 'antd';
+import { Row, Col, Layout, Spin } from 'antd';
 import PropTypes from 'prop-types';
 
 import HeaderLoginedUsers from './HeaderLoginedUser/HeaderLoginedUsers';
 import HeaderNotLoginedUsers from './HeaderNotLoginedUser/HeaderNotLoginedUsers';
 import './BlogHeader.scss';
-import API from '../../Api/api';
 import * as actions from '../../store/actions';
 
 const { Header } = Layout;
-const { sendLogin, getProfile } = new API();
 
-const mapStateToProps = ({ userInfo }) => ({
+const mapStateToProps = ({ userInfo, fetchStatus }) => ({
   username: userInfo.username,
+  fetchStatus,
 });
 
 const mapDispatchToProps = (dispatch) => {
-  return { setUser: (user) => dispatch(actions.setUser(user)) };
+  return {
+    loginUser: (values) => dispatch(actions.loginUser(values)),
+  };
 };
 
-const BlogHeader = ({ username, setUser }) => {
-  if (localStorage.getItem('userInfo') && !username) {
-    sendLogin(JSON.parse(localStorage.getItem('userInfo'))).then(({ user }) =>
-      getProfile(user).then(({ image }) => {
-        setUser({ ...user, image });
-      })
-    );
-  }
-  return (
+const BlogHeader = ({ username, loginUser, isFetching }) => {
+  useEffect(() => {
+    if (localStorage.getItem('userInfo') && !username) {
+      loginUser(JSON.parse(localStorage.getItem('userInfo')));
+    }
+  }, [loginUser, username]);
+
+  return isFetching ? (
+    <Spin tip="Loading..." />
+  ) : (
     <Header className="header">
       <Row className="header__container">
         <Col span={12}>
@@ -53,9 +55,11 @@ export default connect(mapStateToProps, mapDispatchToProps)(BlogHeader);
 
 BlogHeader.propTypes = {
   username: PropTypes.string,
-  setUser: PropTypes.func.isRequired,
+  loginUser: PropTypes.func.isRequired,
+  isFetching: PropTypes.bool,
 };
 
 BlogHeader.defaultProps = {
   username: undefined,
+  isFetching: undefined,
 };

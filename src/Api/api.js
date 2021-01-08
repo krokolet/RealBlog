@@ -1,7 +1,6 @@
 import axios from 'axios';
 import {
   loginPath,
-  profilePath,
   toggleArticleFavoritePath,
   deleteArticlePath,
   addArticlePath,
@@ -69,10 +68,6 @@ class API {
 
   sendDeleteArticle = async (slug) => {
     return this.sendInfo(`${deleteArticlePath}/${slug}`, 'delete');
-  };
-
-  getProfile = (user) => {
-    return this.sendInfo(`${profilePath}/${user.username}`, 'get');
   };
 
   sendSetLike = (slug) => {

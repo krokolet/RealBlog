@@ -36,7 +36,7 @@ const App = ({ errorsFetching }) => {
   return (
     <Layout className="wrapper">
       {errorsFetching === 'No connection' ? (
-        <span>No connection</span>
+        <span>No connection. Try to reload page.</span>
       ) : (
         <>
           <BlogHeader />
@@ -60,5 +60,9 @@ const App = ({ errorsFetching }) => {
 export default withRouter(connect(mapStateToProps)(App));
 
 App.propTypes = {
-  errorsFetching: PropTypes.arrayOf({}).isRequired,
+  errorsFetching: PropTypes.string,
+};
+
+App.defaultProps = {
+  errorsFetching: null,
 };

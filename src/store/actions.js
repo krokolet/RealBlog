@@ -39,11 +39,20 @@ const fetchSuccess = () => ({
   type: FETCH_SUCCESS,
 });
 
-const fetchFailure = (errors) => {
-  return {
-    type: FETCH_FAILURE,
-    errors,
-  };
+const fetchFailure = (errors) => ({
+  type: FETCH_FAILURE,
+  errors,
+});
+
+const isConnection = (err) => {
+  if (!err) {
+    return 'No connection';
+  }
+  const {
+    status,
+    data: { errors },
+  } = err;
+  return errorFromApiToForm(status, errors);
 };
 
 export const loginUser = (values) => {
@@ -58,8 +67,8 @@ export const loginUser = (values) => {
         dispatch(fetchSuccess());
         dispatch(setUser({ email: user.email, username: user.username, image: user.image }));
       })
-      .catch(({ status, data: { errors } }) => {
-        dispatch(fetchFailure(errorFromApiToForm(status, errors)));
+      .catch((err) => {
+        dispatch(fetchFailure(isConnection(err)));
       });
   };
 };
