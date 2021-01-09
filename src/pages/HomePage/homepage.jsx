@@ -5,36 +5,29 @@ import PropTypes from 'prop-types';
 
 import ArticlePreview from '../../components/ArticlePreview/articlePreview';
 import * as actions from '../../store/actions';
-import API from '../../Api/api';
-import { articlesPath } from '../../Api/apiPaths';
 import './homepage.scss';
 
 const articlesPerPage = 10;
 
-const { loadArticles } = new API();
-
-const mapStateToProps = ({ userInfo, articlesCount, articlesList, currentPage }) => ({
+const mapStateToProps = ({ userInfo, articlesCount, articlesList, currentPage, fetchStatus }) => ({
   username: userInfo.username,
   articlesCount,
   articlesList,
   currentPage,
+  fetchStatus,
 });
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    setArticles: (articles) => dispatch(actions.setArticles(articles)),
-    setArticlesCount: (count) => dispatch(actions.setArticlesCount(count)),
     setCurrentPage: (page) => dispatch(actions.setCurrentPage(page)),
+    getArticles: (artPerPage) => dispatch(actions.getArticles(artPerPage)),
   };
 };
 
-const Homepage = ({ setArticlesCount, articlesCount, setArticles, articlesList, currentPage, setCurrentPage }) => {
+const Homepage = ({ articlesCount, articlesList, currentPage, setCurrentPage, getArticles }) => {
   useEffect(() => {
-    loadArticles(articlesPerPage, currentPage, articlesPath).then((res) => {
-      setArticlesCount(res.articlesCount);
-      setArticles(res.articles);
-    });
-  }, [currentPage, setArticles, setArticlesCount]);
+    getArticles(articlesPerPage);
+  }, [getArticles]);
 
   return !articlesList.length ? (
     <Spin tip="Loading..." />
@@ -59,9 +52,7 @@ const Homepage = ({ setArticlesCount, articlesCount, setArticles, articlesList, 
 export default connect(mapStateToProps, mapDispatchToProps)(Homepage);
 
 Homepage.propTypes = {
-  setArticlesCount: PropTypes.func.isRequired,
   articlesCount: PropTypes.number.isRequired,
-  setArticles: PropTypes.func.isRequired,
   articlesList: PropTypes.arrayOf(
     PropTypes.shape({
       slug: PropTypes.string.isRequired,
@@ -82,6 +73,7 @@ Homepage.propTypes = {
   ),
   currentPage: PropTypes.number.isRequired,
   setCurrentPage: PropTypes.func.isRequired,
+  getArticles: PropTypes.func.isRequired,
 };
 
 Homepage.defaultProps = {

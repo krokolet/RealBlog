@@ -20,7 +20,7 @@ const mapDispatchToProps = (dispatch) => {
 
 const Like = ({ slug, username, setLike, deleteLike, isFetching, favorited, favoritesCount }) => {
   const toggleLike = () => {
-    if (isFetching) return;
+    if (isFetching || !username) return;
     if (favorited) {
       deleteLike(slug);
     } else {

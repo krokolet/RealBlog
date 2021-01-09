@@ -13,6 +13,7 @@ const normalizeMessageForForm = (errors) => {
 
 const errorFromApiToForm = (status, errors) => {
   if (!errors) return { errorUnknown: 'Sorry, something went wrong :(' };
+  if (errors === 'Network connection') return 'Network connection';
   switch (status) {
     case 422:
       return normalizeMessageForForm(errors);

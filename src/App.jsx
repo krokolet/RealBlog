@@ -35,7 +35,7 @@ const mapStateToProps = ({ fetchStatus: { errorsFetching } }) => {
 const App = ({ errorsFetching }) => {
   return (
     <Layout className="wrapper">
-      {errorsFetching === 'No connection' ? (
+      {errorsFetching === 'Network connection' ? (
         <span>No connection. Try to reload page.</span>
       ) : (
         <>

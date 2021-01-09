@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { Row, Col, Layout, Spin } from 'antd';
+import { Row, Col, Layout } from 'antd';
 import PropTypes from 'prop-types';
 
 import HeaderLoginedUsers from './HeaderLoginedUser/HeaderLoginedUsers';
@@ -22,16 +22,14 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-const BlogHeader = ({ username, loginUser, isFetching }) => {
+const BlogHeader = ({ username, loginUser }) => {
   useEffect(() => {
     if (localStorage.getItem('userInfo') && !username) {
       loginUser(JSON.parse(localStorage.getItem('userInfo')));
     }
   }, [loginUser, username]);
 
-  return isFetching ? (
-    <Spin tip="Loading..." />
-  ) : (
+  return (
     <Header className="header">
       <Row className="header__container">
         <Col span={12}>
@@ -56,10 +54,8 @@ export default connect(mapStateToProps, mapDispatchToProps)(BlogHeader);
 BlogHeader.propTypes = {
   username: PropTypes.string,
   loginUser: PropTypes.func.isRequired,
-  isFetching: PropTypes.bool,
 };
 
 BlogHeader.defaultProps = {
   username: undefined,
-  isFetching: undefined,
 };

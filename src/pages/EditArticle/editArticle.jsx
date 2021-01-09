@@ -88,7 +88,7 @@ const EditArticle = ({ currentArticle, username, isFetching, errorsFetching, isF
 export default connect(mapStateToProps, mapDispatchToProps)(EditArticle);
 
 EditArticle.propTypes = {
-  currentArticle: {
+  currentArticle: PropTypes.shape({
     slug: PropTypes.string,
     title: PropTypes.string,
     description: PropTypes.string,
@@ -103,7 +103,7 @@ EditArticle.propTypes = {
       bio: PropTypes.string,
       following: PropTypes.bool,
     },
-  },
+  }),
   username: PropTypes.string.isRequired,
   isFetching: PropTypes.bool.isRequired,
   isFetchSuccess: PropTypes.bool.isRequired,

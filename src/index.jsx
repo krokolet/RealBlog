@@ -6,7 +6,6 @@ import ErrorBoundary from 'antd/lib/alert/ErrorBoundary';
 import App from './App';
 import './index.scss';
 import store from './store/confirgureStore';
-// import ErrorBoundary from './components/ErrorBoundary/ErrorBoundary';
 
 ReactDOM.render(
   <ErrorBoundary message="Oops! Something went wrong!">

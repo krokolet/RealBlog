@@ -11,6 +11,7 @@ const {
   sendEditedArticle,
   sendSignUp,
   getSingleArticle,
+  loadArticles,
 } = new API();
 
 export const SET_USER = 'SET_USER';
@@ -44,17 +45,6 @@ const fetchFailure = (errors) => ({
   errors,
 });
 
-const isConnection = (err) => {
-  if (!err) {
-    return 'No connection';
-  }
-  const {
-    status,
-    data: { errors },
-  } = err;
-  return errorFromApiToForm(status, errors);
-};
-
 export const loginUser = (values) => {
   return (dispatch) => {
     dispatch(fetchStarted());
@@ -67,8 +57,8 @@ export const loginUser = (values) => {
         dispatch(fetchSuccess());
         dispatch(setUser({ email: user.email, username: user.username, image: user.image }));
       })
-      .catch((err) => {
-        dispatch(fetchFailure(isConnection(err)));
+      .catch(({ status, errors }) => {
+        dispatch(fetchFailure(errorFromApiToForm(status, errors)));
       });
   };
 };
@@ -208,14 +198,23 @@ export const loadArticle = (slug) => {
         dispatch(fetchSuccess());
         dispatch(setCurrentArticle(article));
       })
-      .catch((err) => {
-        if (!err) {
-          dispatch(fetchFailure('No connection'));
-        }
-        const {
-          status,
-          data: { errors },
-        } = err;
+      .catch(({ status, data: { errors } }) => {
+        dispatch(fetchFailure(errorFromApiToForm(status, errors)));
+      });
+  };
+};
+
+export const getArticles = (articlesPerPage) => {
+  return (dispatch, getState) => {
+    const { currentPage } = getState();
+    dispatch(fetchStarted());
+    return loadArticles(articlesPerPage, currentPage)
+      .then((response) => {
+        dispatch(fetchSuccess());
+        dispatch(setArticlesCount(response.articlesCount));
+        dispatch(setArticles(response.articles));
+      })
+      .catch(({ status, data: { errors } }) => {
         dispatch(fetchFailure(errorFromApiToForm(status, errors)));
       });
   };

@@ -6,6 +6,7 @@ import {
   addArticlePath,
   userPath,
   signupPath,
+  articlesPath,
 } from './apiPaths';
 
 class API {
@@ -26,12 +27,16 @@ class API {
     try {
       const response = await axios.get(path.toString(), config);
       return response.data;
-    } catch ({ response }) {
-      throw response;
+    } catch (err) {
+      if (err.message === 'Network Error') {
+        const connectErr = { status: 'null', errors: 'Network connection' };
+        throw connectErr;
+      }
+      throw err.response;
     }
   };
 
-  loadArticles = (articlesPerPage, currentPage, pathApi) => {
+  loadArticles = (articlesPerPage, currentPage) => {
     const config = {
       headers: this.reqHeaders(),
       params: {
@@ -39,7 +44,7 @@ class API {
         offset: (currentPage - 1) * articlesPerPage,
       },
     };
-    return this.getResourse(pathApi, config);
+    return this.getResourse(articlesPath, config);
   };
 
   sendInfo = async (pathApi, method, values) => {
@@ -53,8 +58,12 @@ class API {
         headers: this.reqHeaders(),
       });
       return response.data;
-    } catch ({ response }) {
-      throw response;
+    } catch (err) {
+      if (err.message === 'Network Error') {
+        const connectErr = { status: 'null', errors: 'Network connection' };
+        throw connectErr;
+      }
+      throw err.response;
     }
   };
 
