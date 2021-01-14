@@ -14,3 +14,9 @@
 .heart--red{
   color: #FF0707;
 }
+
+.disable.heart--black {
+  &:hover {
+    cursor: auto;
+  }
+}

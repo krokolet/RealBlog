@@ -27,12 +27,22 @@ const Like = ({ slug, username, setLike, deleteLike, isFetching, favorited, favo
     }
   };
 
+  const heartClass = {
+    heartRed: 'heart--red',
+    heartBlack: 'heart--black',
+  };
+
+  if (!username) {
+    heartClass.heartRed += ' disable';
+    heartClass.heartBlack += ' disable';
+  }
+
   return (
     <>
       {favorited && username ? (
-        <HeartFilled onClick={toggleLike} className="heart--red" />
+        <HeartFilled onClick={toggleLike} className={heartClass.heartRed} />
       ) : (
-        <HeartOutlined onClick={toggleLike} className="heart--balck" />
+        <HeartOutlined onClick={toggleLike} className={heartClass.heartBlack} />
       )}
       <span className="favoritesCount">{favoritesCount}</span>
     </>

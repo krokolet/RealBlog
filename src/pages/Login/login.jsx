@@ -27,12 +27,12 @@ const Login = ({ loginUser, isFetching, errorsFetching, isFetchSuccess, fetchRes
   const { errors, isSubmitted } = formState;
 
   useEffect(() => {
-    if (errorsFetching && !Object.keys(errors).length) {
+    if (errorsFetching && !Object.keys(formState.errors).length) {
       Object.entries(errorsFetching).map((error) => setError(error[0], { message: error[1] }));
     }
 
     return errorsFetching && !errorsFetching.global ? fetchResetFailure : undefined;
-  }, [errors, errorsFetching, fetchResetFailure, setError]);
+  }, [formState, errorsFetching, fetchResetFailure, setError]);
 
   const onSubmit = (values) => {
     loginUser(values);

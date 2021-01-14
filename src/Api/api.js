@@ -1,5 +1,7 @@
 import axios from 'axios';
-import {
+import apiPaths from './apiPaths';
+
+const {
   loginPath,
   toggleArticleFavoritePath,
   deleteArticlePath,
@@ -7,7 +9,7 @@ import {
   userPath,
   signupPath,
   articlesPath,
-} from './apiPaths';
+} = apiPaths;
 
 class API {
   serverUrl = 'https://conduit.productionready.io';
