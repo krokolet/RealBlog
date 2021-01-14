@@ -15,6 +15,7 @@ import SignupSchema from './signupSchema';
 const mapDispatchToProps = (dispatch) => {
   return {
     signUpUser: (values) => dispatch(actions.signUpUser(values)),
+    fetchResetFailure: () => dispatch(actions.fetchActions.fetchResetFailure()),
   };
 };
 
@@ -22,7 +23,7 @@ const mapStateToProps = ({ fetchStatus: { isFetching, errorsFetching, isFetchSuc
   return { isFetching, errorsFetching, isFetchSuccess };
 };
 
-const SignUp = ({ isFetching, errorsFetching, isFetchSuccess, signUpUser }) => {
+const SignUp = ({ isFetching, errorsFetching, isFetchSuccess, signUpUser, fetchResetFailure }) => {
   const { handleSubmit, control, setError, formState } = useForm({
     reValidateMode: 'onChange',
     resolver: yupResolver(SignupSchema),
@@ -31,21 +32,24 @@ const SignUp = ({ isFetching, errorsFetching, isFetchSuccess, signUpUser }) => {
   const { errors, isSubmitted } = formState;
 
   useEffect(() => {
-    if (errorsFetching && !Object.keys(errors).length) {
+    if (errorsFetching && !Object.keys(formState.errors).length) {
       Object.entries(errorsFetching).map((error) => setError(error[0], { message: error[1] }));
     }
-  }, [errors, errorsFetching, setError]);
+
+    return errorsFetching && !errorsFetching.global ? fetchResetFailure : undefined;
+  }, [formState, errorsFetching, setError, fetchResetFailure]);
 
   const onSubmit = (values) => {
     signUpUser({
-      ...values,
-      image: 'https://static.productionready.io/images/smiley-cyrus.jpg',
+      username: values.username,
+      email: values.email,
+      password: values.password,
     });
   };
 
   return (
     <Row className="formWrapper">
-      {isFetchSuccess && isSubmitted ? (
+      {!isFetching && isFetchSuccess && isSubmitted ? (
         <Redirect to={hrefHomePage} />
       ) : (
         <form onSubmit={handleSubmit(onSubmit)}>
@@ -151,10 +155,11 @@ export default connect(mapStateToProps, mapDispatchToProps)(SignUp);
 SignUp.propTypes = {
   isFetching: PropTypes.bool.isRequired,
   isFetchSuccess: PropTypes.bool.isRequired,
-  errorsFetching: PropTypes.shape({}),
+  errorsFetching: PropTypes.shape({ global: PropTypes.string }),
   signUpUser: PropTypes.func.isRequired,
+  fetchResetFailure: PropTypes.func.isRequired,
 };
 
 SignUp.defaultProps = {
-  errorsFetching: null,
+  errorsFetching: { global: undefined },
 };

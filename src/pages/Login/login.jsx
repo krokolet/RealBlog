@@ -13,6 +13,7 @@ import './login.scss';
 const mapDispatchToProps = (dispatch) => {
   return {
     loginUser: (user) => dispatch(actions.loginUser(user)),
+    fetchResetFailure: () => dispatch(actions.fetchActions.fetchResetFailure()),
   };
 };
 
@@ -20,7 +21,7 @@ const mapStateToProps = ({ fetchStatus: { isFetching, errorsFetching, isFetchSuc
   return { isFetching, errorsFetching, isFetchSuccess };
 };
 
-const Login = ({ loginUser, isFetching, errorsFetching, isFetchSuccess }) => {
+const Login = ({ loginUser, isFetching, errorsFetching, isFetchSuccess, fetchResetFailure }) => {
   const { handleSubmit, control, setError, formState } = useForm();
 
   const { errors, isSubmitted } = formState;
@@ -29,7 +30,9 @@ const Login = ({ loginUser, isFetching, errorsFetching, isFetchSuccess }) => {
     if (errorsFetching && !Object.keys(errors).length) {
       Object.entries(errorsFetching).map((error) => setError(error[0], { message: error[1] }));
     }
-  }, [errors, errorsFetching, isFetchSuccess, isSubmitted, setError]);
+
+    return errorsFetching && !errorsFetching.global ? fetchResetFailure : undefined;
+  }, [errors, errorsFetching, fetchResetFailure, setError]);
 
   const onSubmit = (values) => {
     loginUser(values);
@@ -101,10 +104,11 @@ export default connect(mapStateToProps, mapDispatchToProps)(Login);
 Login.propTypes = {
   isFetching: PropTypes.bool.isRequired,
   isFetchSuccess: PropTypes.bool.isRequired,
-  errorsFetching: PropTypes.shape({}),
+  errorsFetching: PropTypes.shape({ ...PropTypes, global: PropTypes.string }),
   loginUser: PropTypes.func.isRequired,
+  fetchResetFailure: PropTypes.func.isRequired,
 };
 
 Login.defaultProps = {
-  errorsFetching: null,
+  errorsFetching: { global: undefined },
 };

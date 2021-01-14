@@ -11,7 +11,7 @@ import './headerLoginedUser.scss';
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    logoutUser: () => dispatch(actions.logoutUser()),
+    logoutUser: () => dispatch(actions.userActions.logoutUser()),
   };
 };
 
@@ -56,5 +56,9 @@ export default connect(mapStateToProps, mapDispatchToProps)(HeaderLoginedUsers);
 HeaderLoginedUsers.propTypes = {
   username: PropTypes.string.isRequired,
   logoutUser: PropTypes.func.isRequired,
-  userImage: PropTypes.string.isRequired,
+  userImage: PropTypes.string,
+};
+
+HeaderLoginedUsers.defaultProps = {
+  userImage: null,
 };

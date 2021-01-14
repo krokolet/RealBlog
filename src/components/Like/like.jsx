@@ -11,8 +11,7 @@ const mapStateToProps = ({ currentArticle, articlesList, userInfo: { username },
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    setCurrentArticle: (article) => dispatch(actions.setCurrentArticle(article)),
-    setArticles: (articles) => dispatch(actions.setArticles(articles)),
+    setArticles: (articles) => dispatch(actions.articlesActions.setArticles(articles)),
     setLike: (slug) => dispatch(actions.setLike(slug)),
     deleteLike: (slug) => dispatch(actions.deleteLike(slug)),
   };

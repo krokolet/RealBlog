@@ -12,17 +12,18 @@ import './article.scss';
 const mapDispatchToProps = (dispatch) => {
   return {
     loadArticle: (slug) => dispatch(actions.loadArticle(slug)),
-    setCurrentArticle: (article) => dispatch(actions.setCurrentArticle(article)),
-    delCurrentArticle: () => dispatch(actions.delCurrentArticle()),
+    setCurrentArticle: (article) => dispatch(actions.articlesActions.setCurrentArticle(article)),
+    delCurrentArticle: () => dispatch(actions.articlesActions.delCurrentArticle()),
     deleteArticle: (slug) => dispatch(actions.deleteArticle(slug)),
   };
 };
 
-const mapStateToProps = ({ currentArticle, userInfo, articlesList }) => {
+const mapStateToProps = ({ currentArticle, userInfo, articlesList, fetchStatus: { errorsFetching } }) => {
   return {
     currentArticle,
     currentUser: userInfo.username,
     articlesList,
+    errorsFetching,
   };
 };
 
@@ -51,7 +52,7 @@ const Article = ({
   } = currentArticle;
 
   useEffect(() => {
-    if (articlesList.length) {
+    if (articlesList.length && articlesList.filter((article) => article.slug === slug).length) {
       setCurrentArticle(articlesList.filter((article) => article.slug === slug)[0]);
     } else if (!title) {
       loadArticle(slug);

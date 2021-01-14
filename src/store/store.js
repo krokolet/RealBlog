@@ -10,6 +10,7 @@ import {
   FETCH_STARTED,
   FETCH_FAILURE,
   FETCH_SUCCESS,
+  FETCH_RESET_FAILURE,
 } from './actions';
 
 const defaultUser = {
@@ -92,9 +93,12 @@ const fetchStatus = (status = defaultFetchStatus, action) => {
     case FETCH_STARTED:
       return { isFetching: true, isFetchSuccess: false, errorsFetching: null };
     case FETCH_SUCCESS:
-      return { ...status, isFetching: false, isFetchSuccess: true };
+      return { isFetching: false, isFetchSuccess: true, errorsFetching: null };
     case FETCH_FAILURE:
       return { isFetching: false, isFetchSuccess: false, errorsFetching: action.errors };
+    case FETCH_RESET_FAILURE: {
+      return { isFetching: false, isFetchSuccess: false, errorsFetching: null };
+    }
     default:
       return status;
   }

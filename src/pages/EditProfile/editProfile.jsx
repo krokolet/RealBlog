@@ -11,7 +11,7 @@ import ProfileForm from '../../components/ProfileForm/ProfileForm';
 const mapDispatchToProps = (dispatch) => {
   return {
     editUserProfile: (user) => dispatch(actions.editUserProfile(user)),
-    setUser: (user) => dispatch(actions.setUser(user)),
+    setUser: (user) => dispatch(actions.userActions.setUser(user)),
   };
 };
 

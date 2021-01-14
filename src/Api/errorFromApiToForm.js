@@ -12,13 +12,14 @@ const normalizeMessageForForm = (errors) => {
 };
 
 const errorFromApiToForm = (status, errors) => {
-  if (!errors) return { errorUnknown: 'Sorry, something went wrong :(' };
-  if (errors === 'Network connection') return 'Network connection';
+  if (errors === 'Network  Error') return { global: 'Network connection error' };
   switch (status) {
+    case 404:
+      return { global: 'Sorry, page not found' };
     case 422:
       return normalizeMessageForForm(errors);
     default:
-      return { errorUnknown: 'Sorry, something went wrong :(' };
+      return { global: 'Sorry, something went wrong :(' };
   }
 };
 

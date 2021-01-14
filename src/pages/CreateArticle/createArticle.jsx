@@ -28,7 +28,7 @@ const mapDispatchToProps = (dispatch) => {
 
 const normalizeTags = (tags) => {
   if (!tags) return [];
-  return tags.filter((tag) => tag.length > 0);
+  return tags.filter((tag) => tag && tag);
 };
 
 const CreateArticle = ({ username, isFetching, errorsFetching, isFetchSuccess, postArticle }) => {

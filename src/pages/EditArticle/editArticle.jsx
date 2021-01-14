@@ -27,8 +27,8 @@ const mapDispatchToProps = (dispatch) => {
 };
 
 const normalizeTags = (tags) => {
-  if (!tags) return [];
-  return tags.filter((tag) => tag.length > 0);
+  if (!tags) return null;
+  return tags.filter((tag) => tag && tag);
 };
 
 const EditArticle = ({ currentArticle, username, isFetching, errorsFetching, isFetchSuccess, postEditedArticle }) => {
@@ -96,13 +96,13 @@ EditArticle.propTypes = {
     tagList: PropTypes.arrayOf(PropTypes.string),
     createdAt: PropTypes.string,
     updatedAt: PropTypes.string,
-    favoritesCount: PropTypes.string,
-    author: {
+    favoritesCount: PropTypes.number,
+    author: PropTypes.shape({
       username: PropTypes.string,
       image: PropTypes.string,
       bio: PropTypes.string,
       following: PropTypes.bool,
-    },
+    }),
   }),
   username: PropTypes.string.isRequired,
   isFetching: PropTypes.bool.isRequired,

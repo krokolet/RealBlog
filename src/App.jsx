@@ -2,10 +2,11 @@ import React from 'react';
 import 'antd/dist/antd.css';
 import './App.scss';
 
-import { Layout } from 'antd';
+import { Layout, Button } from 'antd';
 import { Route, Switch, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+import * as actions from './store/actions';
 
 import Login from './pages/Login/login';
 import SignUp from './pages/SignUp/signup';
@@ -32,11 +33,28 @@ const mapStateToProps = ({ fetchStatus: { errorsFetching } }) => {
   return { errorsFetching };
 };
 
-const App = ({ errorsFetching }) => {
+const mapDispatchToProps = (dispatch) => {
+  return {
+    fetchResetFailure: () => dispatch(actions.fetchActions.fetchResetFailure()),
+  };
+};
+
+const App = ({ errorsFetching, history, fetchResetFailure }) => {
+  const globalError = errorsFetching?.global && errorsFetching.global;
   return (
     <Layout className="wrapper">
-      {errorsFetching === 'Network connection' ? (
-        <span>No connection. Try to reload page.</span>
+      {globalError ? (
+        <div>
+          <div>{globalError}</div>
+          <Button
+            onClick={() => {
+              fetchResetFailure();
+              history.push(hrefHomePage);
+            }}
+          >
+            Try again.
+          </Button>
+        </div>
       ) : (
         <>
           <BlogHeader />
@@ -57,10 +75,12 @@ const App = ({ errorsFetching }) => {
   );
 };
 
-export default withRouter(connect(mapStateToProps)(App));
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(App));
 
 App.propTypes = {
-  errorsFetching: PropTypes.string,
+  errorsFetching: PropTypes.objectOf(PropTypes.string),
+  fetchResetFailure: PropTypes.func.isRequired,
+  history: { ...PropTypes.object }.isRequired,
 };
 
 App.defaultProps = {

@@ -23,49 +23,56 @@ export const SET_CURRENT_PAGE = 'SET_CURRENT_PAGE';
 export const FETCH_STARTED = 'FETCH_STARTED';
 export const FETCH_SUCCESS = 'FETCH_SUCCESS';
 export const FETCH_FAILURE = 'FETCH_FAILURE';
+export const FETCH_RESET_FAILURE = 'FETCH_RESET_FAILURE';
 
-export const setUser = (user) => ({ type: SET_USER, user });
-export const logoutUser = () => ({ type: SET_USER, user: {} });
-export const setArticles = (payload) => ({ type: SET_ARTICLES, payload });
-export const setArticlesCount = (count) => ({ type: SET_ARTICLE_COUNT, count });
-export const setCurrentArticle = (article) => ({ type: SET_CURRENT_ARTICLE, article });
-export const delCurrentArticle = () => ({ type: DEL_CURRENT_ARTICLE });
-export const setCurrentPage = (page) => ({ type: SET_CURRENT_PAGE, page });
+export const userActions = {
+  setUser: (user) => ({ type: SET_USER, user }),
+  logoutUser: () => ({ type: SET_USER, user: {} }),
+};
 
-const fetchStarted = () => ({
-  type: FETCH_STARTED,
-});
+export const articlesActions = {
+  setArticles: (payload) => ({ type: SET_ARTICLES, payload }),
+  setArticlesCount: (count) => ({ type: SET_ARTICLE_COUNT, count }),
+  setCurrentArticle: (article) => ({ type: SET_CURRENT_ARTICLE, article }),
+  delCurrentArticle: () => ({ type: DEL_CURRENT_ARTICLE }),
+  setCurrentPage: (page) => ({ type: SET_CURRENT_PAGE, page }),
+};
 
-const fetchSuccess = () => ({
-  type: FETCH_SUCCESS,
-});
-
-const fetchFailure = (errors) => ({
-  type: FETCH_FAILURE,
-  errors,
-});
+export const fetchActions = {
+  fetchStarted: () => ({
+    type: FETCH_STARTED,
+  }),
+  fetchSuccess: () => ({
+    type: FETCH_SUCCESS,
+  }),
+  fetchFailure: (errors) => ({
+    type: FETCH_FAILURE,
+    errors,
+  }),
+  fetchResetFailure: () => ({ type: FETCH_RESET_FAILURE }),
+};
 
 export const loginUser = (values) => {
   return (dispatch) => {
-    dispatch(fetchStarted());
+    dispatch(fetchActions.fetchStarted());
     return sendLogin(values)
       .then(({ user }) => {
         localStorage.setItem(
           'userInfo',
           JSON.stringify({ email: user.email, password: values.password, token: user.token }).toString()
         );
-        dispatch(fetchSuccess());
-        dispatch(setUser({ email: user.email, username: user.username, image: user.image }));
+        dispatch(fetchActions.fetchSuccess());
+        dispatch(userActions.setUser({ email: user.email, username: user.username, image: user.image }));
       })
-      .catch(({ status, errors }) => {
-        dispatch(fetchFailure(errorFromApiToForm(status, errors)));
+      .catch(({ status, data: { errors } }) => {
+        dispatch(fetchActions.fetchFailure(errorFromApiToForm(status, errors)));
       });
   };
 };
 
 export const editUserProfile = (values) => {
   return (dispatch) => {
-    dispatch(fetchStarted());
+    dispatch(fetchActions.fetchStarted());
     return sendNewProfile(values)
       .then(({ user }) => {
         localStorage.setItem(
@@ -76,57 +83,69 @@ export const editUserProfile = (values) => {
             token: user.token,
           }).toString()
         );
-        dispatch(fetchSuccess());
-        dispatch(setUser({ email: user.email, username: user.username, image: user.image }));
+        dispatch(fetchActions.fetchSuccess());
+        dispatch(userActions.setUser({ email: user.email, username: user.username, image: user.image }));
       })
       .catch(({ status, data: { errors } }) => {
-        dispatch(fetchFailure(errorFromApiToForm(status, errors)));
+        dispatch(fetchActions.fetchFailure(errorFromApiToForm(status, errors)));
       });
   };
 };
 
 export const setLike = (slug) => {
   return (dispatch, getState) => {
-    const { articlesList } = getState();
-    dispatch(fetchStarted());
+    const { articlesList, currentArticle } = getState();
+    dispatch(fetchActions.fetchStarted());
     return sendSetLike(slug)
       .then(() => {
-        dispatch(fetchSuccess());
+        dispatch(fetchActions.fetchSuccess());
         dispatch(
-          setArticles(
-            articlesList.map((article) =>
-              article.slug === slug
-                ? { ...article, favorited: true, favoritesCount: article.favoritesCount + 1 }
-                : article
-            )
-          )
+          articlesList.length
+            ? articlesActions.setArticles(
+                articlesList.map((article) =>
+                  article.slug === slug
+                    ? { ...article, favorited: true, favoritesCount: article.favoritesCount + 1 }
+                    : article
+                )
+              )
+            : articlesActions.setCurrentArticle({
+                ...currentArticle,
+                favorited: true,
+                favoritesCount: currentArticle.favoritesCount + 1,
+              })
         );
       })
       .catch(({ status, data: { errors } }) => {
-        dispatch(fetchFailure(errorFromApiToForm(status, errors)));
+        dispatch(fetchActions.fetchFailure(errorFromApiToForm(status, errors)));
       });
   };
 };
 
 export const deleteLike = (slug) => {
   return (dispatch, getState) => {
-    const { articlesList } = getState();
-    dispatch(fetchStarted());
+    const { articlesList, currentArticle } = getState();
+    dispatch(fetchActions.fetchStarted());
     return sendDeleteLike(slug)
       .then(() => {
-        dispatch(fetchSuccess());
+        dispatch(fetchActions.fetchSuccess());
         dispatch(
-          setArticles(
-            articlesList.map((article) =>
-              article.slug === slug
-                ? { ...article, favorited: false, favoritesCount: article.favoritesCount - 1 }
-                : article
-            )
-          )
+          articlesList.length
+            ? articlesActions.setArticles(
+                articlesList.map((article) =>
+                  article.slug === slug
+                    ? { ...article, favorited: false, favoritesCount: article.favoritesCount - 1 }
+                    : article
+                )
+              )
+            : articlesActions.setCurrentArticle({
+                ...currentArticle,
+                favorited: false,
+                favoritesCount: currentArticle.favoritesCount - 1,
+              })
         );
       })
       .catch(({ status, data: { errors } }) => {
-        dispatch(fetchFailure(errorFromApiToForm(status, errors)));
+        dispatch(fetchActions.fetchFailure(errorFromApiToForm(status, errors)));
       });
   };
 };
@@ -134,72 +153,72 @@ export const deleteLike = (slug) => {
 export const deleteArticle = (slug) => {
   return (dispatch, getState) => {
     const { articlesList } = getState();
-    dispatch(fetchStarted());
+    dispatch(fetchActions.fetchStarted());
     return sendDeleteArticle(slug)
       .then(() => {
-        dispatch(fetchSuccess());
-        dispatch(setArticles(articlesList.filter((article) => article.slug !== slug)));
+        dispatch(fetchActions.fetchSuccess());
+        dispatch(articlesActions.setArticles(articlesList.filter((article) => article.slug !== slug)));
       })
       .catch(({ status, data: { errors } }) => {
-        dispatch(fetchFailure(errorFromApiToForm(status, errors)));
+        dispatch(fetchActions.fetchFailure(errorFromApiToForm(status, errors)));
       });
   };
 };
 
 export const postArticle = (article) => {
   return (dispatch) => {
-    dispatch(fetchStarted());
+    dispatch(fetchActions.fetchStarted());
     return sendArticle(article)
       .then(() => {
-        dispatch(fetchSuccess());
+        dispatch(fetchActions.fetchSuccess());
       })
       .catch(({ status, data: { errors } }) => {
-        dispatch(fetchFailure(errorFromApiToForm(status, errors)));
+        dispatch(fetchActions.fetchFailure(errorFromApiToForm(status, errors)));
       });
   };
 };
 
 export const postEditedArticle = (slug, article) => {
   return (dispatch) => {
-    dispatch(fetchStarted());
+    dispatch(fetchActions.fetchStarted());
     return sendEditedArticle(slug, article)
       .then(() => {
-        dispatch(fetchSuccess());
+        dispatch(fetchActions.fetchSuccess());
       })
       .catch(({ status, data: { errors } }) => {
-        dispatch(fetchFailure(errorFromApiToForm(status, errors)));
+        dispatch(fetchActions.fetchFailure(errorFromApiToForm(status, errors)));
       });
   };
 };
 
 export const signUpUser = (values) => {
   return (dispatch) => {
-    dispatch(fetchStarted());
+    dispatch(fetchActions.fetchStarted());
     return sendSignUp(values)
       .then(({ user }) => {
         localStorage.setItem(
           'userInfo',
-          JSON.stringify({ email: values.email, password: values.password, token: user.token }).toString()
+          JSON.stringify({ email: user.email, password: values.password, token: user.token }).toString()
         );
-        dispatch(fetchSuccess());
-        dispatch(setUser({ email: user.email, username: user.username, image: user.image }));
+        dispatch(fetchActions.fetchSuccess());
+        dispatch(userActions.setUser({ email: user.email, username: user.username, image: user.image }));
       })
       .catch(({ status, data: { errors } }) => {
-        dispatch(fetchFailure(errorFromApiToForm(status, errors)));
+        dispatch(fetchActions.fetchFailure(errorFromApiToForm(status, errors)));
       });
   };
 };
 
 export const loadArticle = (slug) => {
   return (dispatch) => {
-    dispatch(fetchStarted());
+    dispatch(fetchActions.fetchStarted());
     return getSingleArticle(slug)
       .then(({ article }) => {
-        dispatch(fetchSuccess());
-        dispatch(setCurrentArticle(article));
+        dispatch(fetchActions.fetchSuccess());
+        dispatch(articlesActions.setCurrentArticle(article));
       })
       .catch(({ status, data: { errors } }) => {
-        dispatch(fetchFailure(errorFromApiToForm(status, errors)));
+        dispatch(fetchActions.fetchFailure(errorFromApiToForm(status, errors)));
       });
   };
 };
@@ -207,15 +226,15 @@ export const loadArticle = (slug) => {
 export const getArticles = (articlesPerPage) => {
   return (dispatch, getState) => {
     const { currentPage } = getState();
-    dispatch(fetchStarted());
+    dispatch(fetchActions.fetchStarted());
     return loadArticles(articlesPerPage, currentPage)
       .then((response) => {
-        dispatch(fetchSuccess());
-        dispatch(setArticlesCount(response.articlesCount));
-        dispatch(setArticles(response.articles));
+        dispatch(fetchActions.fetchSuccess());
+        dispatch(articlesActions.setArticlesCount(response.articlesCount));
+        dispatch(articlesActions.setArticles(response.articles));
       })
       .catch(({ status, data: { errors } }) => {
-        dispatch(fetchFailure(errorFromApiToForm(status, errors)));
+        dispatch(fetchActions.fetchFailure(errorFromApiToForm(status, errors)));
       });
   };
 };

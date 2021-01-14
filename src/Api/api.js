@@ -29,7 +29,7 @@ class API {
       return response.data;
     } catch (err) {
       if (err.message === 'Network Error') {
-        const connectErr = { status: 'null', errors: 'Network connection' };
+        const connectErr = { status: 'null', data: { errors: err.message } };
         throw connectErr;
       }
       throw err.response;
@@ -60,7 +60,7 @@ class API {
       return response.data;
     } catch (err) {
       if (err.message === 'Network Error') {
-        const connectErr = { status: 'null', errors: 'Network connection' };
+        const connectErr = { status: 'null', data: { errors: err.message } };
         throw connectErr;
       }
       throw err.response;
@@ -92,7 +92,7 @@ class API {
   };
 
   sendLogin = (values) => {
-    return this.sendInfo(loginPath, 'post', { user: values });
+    return this.sendInfo(loginPath, 'post', { user: { ...values, email: values.email.toLowerCase() } });
   };
 
   sendSignUp = (values) => {

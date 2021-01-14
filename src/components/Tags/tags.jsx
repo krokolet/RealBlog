@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { useFormContext } from 'react-hook-form';
-import { Col, Row, Button } from 'antd';
+import { useFormContext, Controller } from 'react-hook-form';
+import { Col, Row, Button, Input } from 'antd';
 
 import './tags.scss';
 
 const Tags = (tagList) => {
-  const { register } = useFormContext();
+  const { control } = useFormContext();
 
   const [tagsId, setTagsId] = useState([]);
 
@@ -33,13 +33,11 @@ const Tags = (tagList) => {
     return (
       <Row gutter={[0, 16]} key={id}>
         <Col flex={12}>
-          <input
-            id={id}
-            ref={register()}
+          <Controller
+            control={control}
             name={`tagList[${id}]`}
-            placeholder="Tag"
-            className="tag__field"
             defaultValue={tagValue}
+            as={<Input id={id} placeholder="Tag" className="tag__field" />}
           />
         </Col>
         <Col flex={2}>

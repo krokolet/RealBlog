@@ -19,7 +19,7 @@ const mapStateToProps = ({ userInfo, articlesCount, articlesList, currentPage, f
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    setCurrentPage: (page) => dispatch(actions.setCurrentPage(page)),
+    setCurrentPage: (page) => dispatch(actions.articlesActions.setCurrentPage(page)),
     getArticles: (artPerPage) => dispatch(actions.getArticles(artPerPage)),
   };
 };
