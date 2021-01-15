@@ -2,7 +2,7 @@ import React from 'react';
 import 'antd/dist/antd.css';
 import './App.scss';
 
-import { Layout, Button } from 'antd';
+import { Layout, Button, Row, Col } from 'antd';
 import { Route, Switch, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
@@ -26,6 +26,7 @@ import {
   hrefEditArticle,
   hrefEditProfile,
 } from './Api/linksToPages';
+import ErrorText from './components/ErrorText/errorText';
 
 const { Content } = Layout;
 
@@ -44,17 +45,21 @@ const App = ({ errorsFetching, history, fetchResetFailure }) => {
   return (
     <Layout className="wrapper">
       {globalError ? (
-        <div>
-          <div>{globalError}</div>
-          <Button
-            onClick={() => {
-              fetchResetFailure();
-              history.push(hrefHomePage);
-            }}
-          >
-            Try again.
-          </Button>
-        </div>
+        <Row>
+          <Col>
+            {ErrorText(globalError)}
+            <Button
+              type="primary"
+              block
+              onClick={() => {
+                fetchResetFailure();
+                history.push(hrefHomePage);
+              }}
+            >
+              Try again.
+            </Button>
+          </Col>
+        </Row>
       ) : (
         <>
           <BlogHeader />

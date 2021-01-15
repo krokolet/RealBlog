@@ -29,7 +29,7 @@ const SignUp = ({ isFetching, errorsFetching, isFetchSuccess, signUpUser, fetchR
     resolver: yupResolver(SignupSchema),
   });
 
-  const { errors, isSubmitted } = formState;
+  const { errors, isSubmitSuccessful } = formState;
 
   useEffect(() => {
     if (errorsFetching && !Object.keys(formState.errors).length) {
@@ -49,7 +49,7 @@ const SignUp = ({ isFetching, errorsFetching, isFetchSuccess, signUpUser, fetchR
 
   return (
     <Row className="formWrapper">
-      {!isFetching && isFetchSuccess && isSubmitted ? (
+      {!isFetching && isSubmitSuccessful && isFetchSuccess ? (
         <Redirect to={hrefHomePage} />
       ) : (
         <form onSubmit={handleSubmit(onSubmit)}>

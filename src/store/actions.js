@@ -62,7 +62,9 @@ export const loginUser = (values) => {
           JSON.stringify({ email: user.email, password: values.password, token: user.token }).toString()
         );
         dispatch(fetchActions.fetchSuccess());
-        dispatch(userActions.setUser({ email: user.email, username: user.username, image: user.image }));
+        dispatch(
+          userActions.setUser({ email: user.email, username: user.username, image: user.image ? user.image : '' })
+        );
       })
       .catch(({ status, data: { errors } }) => {
         dispatch(fetchActions.fetchFailure(errorFromApiToForm(status, errors)));
@@ -84,7 +86,9 @@ export const editUserProfile = (values) => {
           }).toString()
         );
         dispatch(fetchActions.fetchSuccess());
-        dispatch(userActions.setUser({ email: user.email, username: user.username, image: user.image }));
+        dispatch(
+          userActions.setUser({ email: user.email, username: user.username, image: user.image ? user.image : '' })
+        );
       })
       .catch(({ status, data: { errors } }) => {
         dispatch(fetchActions.fetchFailure(errorFromApiToForm(status, errors)));
@@ -201,7 +205,9 @@ export const signUpUser = (values) => {
           JSON.stringify({ email: user.email, password: values.password, token: user.token }).toString()
         );
         dispatch(fetchActions.fetchSuccess());
-        dispatch(userActions.setUser({ email: user.email, username: user.username, image: user.image }));
+        dispatch(
+          userActions.setUser({ email: user.email, username: user.username, image: user.image ? user.image : '' })
+        );
       })
       .catch(({ status, data: { errors } }) => {
         dispatch(fetchActions.fetchFailure(errorFromApiToForm(status, errors)));

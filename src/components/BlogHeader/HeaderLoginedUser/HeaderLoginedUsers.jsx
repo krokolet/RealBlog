@@ -60,5 +60,5 @@ HeaderLoginedUsers.propTypes = {
 };
 
 HeaderLoginedUsers.defaultProps = {
-  userImage: null,
+  userImage: '',
 };

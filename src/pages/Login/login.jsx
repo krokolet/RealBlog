@@ -104,7 +104,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(Login);
 Login.propTypes = {
   isFetching: PropTypes.bool.isRequired,
   isFetchSuccess: PropTypes.bool.isRequired,
-  errorsFetching: PropTypes.shape({ ...PropTypes, global: PropTypes.string }),
+  errorsFetching: PropTypes.shape({ global: PropTypes.string }),
   loginUser: PropTypes.func.isRequired,
   fetchResetFailure: PropTypes.func.isRequired,
 };

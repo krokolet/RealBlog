@@ -1,5 +1,6 @@
 const apiPaths = {
   loginPath: 'api/users/login',
+  userPath: 'api/user',
   signupPath: 'api/users',
   articlesPath: 'api/articles',
   addArticlePath: 'api/articles',

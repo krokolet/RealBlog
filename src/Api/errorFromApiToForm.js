@@ -12,7 +12,7 @@ const normalizeMessageForForm = (errors) => {
 };
 
 const errorFromApiToForm = (status, errors) => {
-  if (errors === 'Network  Error') return { global: 'Network connection error' };
+  if (errors === 'Network Error') return { global: 'Network connection error' };
   switch (status) {
     case 404:
       return { global: 'Sorry, page not found' };

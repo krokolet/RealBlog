@@ -17,6 +17,7 @@ const mapDispatchToProps = (dispatch) => {
   return {
     editUserProfile: (user) => dispatch(actions.editUserProfile(user)),
     setUser: (user) => dispatch(actions.userActions.setUser(user)),
+    fetchResetFailure: () => dispatch(actions.fetchActions.fetchResetFailure()),
   };
 };
 
@@ -29,19 +30,28 @@ const mapStateToProps = ({ userInfo, fetchStatus: { isFetching, errorsFetching, 
   };
 };
 
-const EditProfile = ({ editUserProfile, isFetching, errorsFetching, isFetchSuccess, defaultValues }) => {
+const EditProfile = ({
+  editUserProfile,
+  isFetching,
+  errorsFetching,
+  defaultValues,
+  isFetchSuccess,
+  fetchResetFailure,
+}) => {
   const { handleSubmit, control, setError, formState } = useForm({
     reValidateMode: 'onChange',
     resolver: yupResolver(EditProfileSchema),
   });
 
-  const { errors, isValid, isSubmitSuccessful } = formState;
+  const { errors, isSubmitSuccessful } = formState;
 
   useEffect(() => {
-    if (formState.errors && !Object.keys(formState.errors).length) {
-      Object.entries(formState.errors).map((error) => setError(error[0], { message: error[1] }));
+    if (errorsFetching && !Object.keys(formState.errors).length) {
+      Object.entries(errorsFetching).map((error) => setError(error[0], { message: error[1] }));
     }
-  }, [formState, setError]);
+
+    return errorsFetching && !errorsFetching.global ? fetchResetFailure : undefined;
+  }, [formState, setError, errorsFetching, fetchResetFailure]);
 
   const onSubmit = (values) => {
     const normalizeValues = _.omitBy(values, (value) => value.trim() === '');
@@ -50,7 +60,7 @@ const EditProfile = ({ editUserProfile, isFetching, errorsFetching, isFetchSucce
 
   return (
     <Row className="formWrapper" justify="center">
-      {isFetchSuccess && isValid && isSubmitSuccessful && !errorsFetching ? (
+      {!isFetching && isSubmitSuccessful && isFetchSuccess ? (
         <Redirect to={hrefHomePage} />
       ) : (
         <form onSubmit={handleSubmit(onSubmit)}>
@@ -137,8 +147,9 @@ EditProfile.propTypes = {
   }).isRequired,
   editUserProfile: PropTypes.func.isRequired,
   isFetching: PropTypes.bool.isRequired,
+  errorsFetching: PropTypes.shape({ global: PropTypes.string }),
   isFetchSuccess: PropTypes.bool.isRequired,
-  errorsFetching: PropTypes.shape({}),
+  fetchResetFailure: PropTypes.func.isRequired,
 };
 
 EditProfile.defaultProps = {
