@@ -27,7 +27,7 @@ const mapDispatchToProps = (dispatch) => {
 const Homepage = ({ articlesCount, articlesList, currentPage, setCurrentPage, getArticles }) => {
   useEffect(() => {
     getArticles(articlesPerPage);
-  }, [getArticles]);
+  }, [getArticles, currentPage]);
 
   return !articlesList.length ? (
     <Spin tip="Loading..." />

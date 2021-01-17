@@ -180,7 +180,7 @@ Article.propTypes = {
       tagList: PropTypes.arrayOf(PropTypes.string),
       createdAt: PropTypes.string,
       updatedAt: PropTypes.string,
-      favoritesCount: PropTypes.number,
+      favoritesCount: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
       author: PropTypes.shape({
         username: PropTypes.string,
         image: PropTypes.string,

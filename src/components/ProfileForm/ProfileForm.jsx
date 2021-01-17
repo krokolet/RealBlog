@@ -69,7 +69,7 @@ const EditProfile = ({
           </Row>
           {errors.errorUnknown && ErrorText(errors.errorUnknown)}
           <Row gutter={[0, 18]}>
-            <Col span={24}>
+            <Col span={24} className="gutter-row">
               <label htmlFor="username" className="form_label">
                 Username:{' '}
               </label>
@@ -78,7 +78,7 @@ const EditProfile = ({
             </Col>
           </Row>
           <Row gutter={[0, 18]}>
-            <Col span={24}>
+            <Col span={24} className="gutter-row">
               <label htmlFor="email" className="form_label">
                 Email address:{' '}
               </label>
@@ -87,7 +87,7 @@ const EditProfile = ({
             </Col>
           </Row>
           <Row gutter={[0, 18]}>
-            <Col span={24}>
+            <Col span={24} className="gutter-row">
               <label htmlFor="password" className="form_label">
                 New password:{' '}
               </label>
@@ -103,7 +103,7 @@ const EditProfile = ({
             </Col>
           </Row>
           <Row gutter={[0, 18]}>
-            <Col span={24}>
+            <Col span={24} className="gutter-row">
               <label htmlFor="image" className="form_label">
                 Image:{' '}
               </label>

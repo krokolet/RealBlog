@@ -41,7 +41,7 @@ const CreateArticle = ({ username, isFetching, errorsFetching, isFetchSuccess, p
     }
   }, [errors, errorsFetching, isFetchSuccess, isSubmitted, setError]);
 
-  if (!username) {
+  if (username === undefined) {
     return <Redirect to={hrefHomePage} />;
   }
 
