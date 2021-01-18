@@ -79,7 +79,7 @@ const EditArticle = ({
     setError,
   ]);
 
-  if (username === undefined || username !== currentArticle.author.username) {
+  if (currentArticle.title && (!localStorage.getItem('userInfo') || username !== currentArticle.author.username)) {
     return <Redirect to={hrefHomePage} />;
   }
 
