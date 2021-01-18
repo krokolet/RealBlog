@@ -66,6 +66,7 @@ const EditArticle = ({
       loadArticle(slug);
     }
   }, [
+    username,
     currentArticle,
     slug,
     setCurrentArticle,
@@ -78,7 +79,7 @@ const EditArticle = ({
     setError,
   ]);
 
-  if (username === undefined) {
+  if (username === undefined || username !== currentArticle.author.username) {
     return <Redirect to={hrefHomePage} />;
   }
 

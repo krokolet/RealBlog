@@ -34,6 +34,10 @@ const Login = ({ loginUser, isFetching, errorsFetching, isFetchSuccess, fetchRes
     return errorsFetching && !errorsFetching.global ? fetchResetFailure : undefined;
   }, [formState, errorsFetching, fetchResetFailure, setError]);
 
+  if (localStorage.getItem('userInfo')) {
+    return <Redirect path={hrefHomePage} />;
+  }
+
   const onSubmit = (values) => {
     loginUser(values);
   };

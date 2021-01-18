@@ -39,6 +39,10 @@ const SignUp = ({ isFetching, errorsFetching, isFetchSuccess, signUpUser, fetchR
     return errorsFetching && !errorsFetching.global ? fetchResetFailure : undefined;
   }, [formState, errorsFetching, setError, fetchResetFailure]);
 
+  if (localStorage.getItem('userInfo')) {
+    return <Redirect path={hrefHomePage} />;
+  }
+
   const onSubmit = (values) => {
     signUpUser({
       username: values.username,

@@ -7,7 +7,7 @@ import * as _ from 'lodash';
 import PropTypes from 'prop-types';
 
 import './articlePreview.scss';
-import { hrefArcticles } from '../../Api/linksToPages';
+import { hrefArticles } from '../../Api/linksToPages';
 import Like from '../Like/like';
 
 const ArticlePreview = ({ article }) => {
@@ -32,7 +32,7 @@ const ArticlePreview = ({ article }) => {
           <article>
             <Row gutter={[13, 6]} type="flex" align="middle">
               <Col className="row-gutter">
-                <Link to={`${hrefArcticles}/${slug}`} className="articlePreview__link">
+                <Link to={`${hrefArticles}/${slug}`} className="articlePreview__link">
                   <h1 className="articlePreview__title">{title}</h1>
                 </Link>
               </Col>

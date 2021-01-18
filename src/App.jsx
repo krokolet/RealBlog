@@ -21,7 +21,7 @@ import {
   hrefHomePage,
   hrefSignup,
   hrefLogin,
-  hrefArcticles,
+  hrefArticles,
   hrefCreateArcticle,
   hrefEditArticle,
   hrefEditProfile,
@@ -66,9 +66,10 @@ const App = ({ errorsFetching, history, fetchResetFailure }) => {
           <Content>
             <Switch>
               <Route exact path={hrefHomePage} component={Homepage} />
+              <Route exact path={hrefArticles} component={Homepage} />
               <Route path={hrefLogin} component={Login} />
               <Route path={hrefSignup} component={SignUp} />
-              <Route exact path={`${hrefArcticles}/:slug`} component={Article} />
+              <Route exact path={`${hrefArticles}/:slug`} component={Article} />
               <Route path={hrefCreateArcticle} render={() => <CreateArticle />} />
               <Route path={`${hrefEditArticle}/:slug/edit`} render={({ match }) => <EditArticle match={match} />} />
               <Route path={hrefEditProfile} render={() => <EditProfile />} />
