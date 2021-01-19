@@ -11,9 +11,8 @@ import ErrorText from '../../components/ErrorText/errorText';
 import { hrefHomePage } from '../../Api/linksToPages';
 import * as actions from '../../store/actions';
 
-const mapStateToProps = ({ userInfo, fetchStatus: { isFetching, errorsFetching, isFetchSuccess } }) => {
+const mapStateToProps = ({ fetchStatus: { isFetching, errorsFetching, isFetchSuccess } }) => {
   return {
-    username: userInfo.username,
     isFetching,
     errorsFetching,
     isFetchSuccess,
@@ -31,7 +30,7 @@ const normalizeTags = (tags) => {
   return tags.filter((tag) => tag && tag);
 };
 
-const CreateArticle = ({ username, isFetching, errorsFetching, isFetchSuccess, postArticle }) => {
+const CreateArticle = ({ isFetching, errorsFetching, isFetchSuccess, postArticle }) => {
   const { formState, setError, ...methods } = useForm();
   const { errors, isSubmitted } = formState;
 
@@ -41,7 +40,7 @@ const CreateArticle = ({ username, isFetching, errorsFetching, isFetchSuccess, p
     }
   }, [errors, errorsFetching, isFetchSuccess, isSubmitted, setError]);
 
-  if (username === undefined) {
+  if (!localStorage.getItem('userInfo')) {
     return <Redirect to={hrefHomePage} />;
   }
 
@@ -86,7 +85,6 @@ const CreateArticle = ({ username, isFetching, errorsFetching, isFetchSuccess, p
 export default connect(mapStateToProps, mapDispatchToProps)(CreateArticle);
 
 CreateArticle.propTypes = {
-  username: PropTypes.string,
   postArticle: PropTypes.func.isRequired,
   isFetching: PropTypes.bool.isRequired,
   isFetchSuccess: PropTypes.bool.isRequired,
@@ -95,5 +93,4 @@ CreateArticle.propTypes = {
 
 CreateArticle.defaultProps = {
   errorsFetching: null,
-  username: undefined,
 };

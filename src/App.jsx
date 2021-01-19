@@ -1,9 +1,9 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import 'antd/dist/antd.css';
 import './App.scss';
 
 import { Layout, Button, Row, Col } from 'antd';
-import { Route, Switch, withRouter } from 'react-router-dom';
+import { Route, Switch, withRouter, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import * as actions from './store/actions';
@@ -41,7 +41,14 @@ const mapDispatchToProps = (dispatch) => {
 };
 
 const App = ({ errorsFetching, history, fetchResetFailure }) => {
-  const globalError = errorsFetching?.global && errorsFetching.global;
+  const [globalError, setError] = useState('');
+
+  useEffect(() => {
+    if (errorsFetching?.global && errorsFetching.global) {
+      setError(errorsFetching.global);
+    }
+  }, [errorsFetching, setError]);
+
   return (
     <Layout className="wrapper">
       {globalError ? (
@@ -53,6 +60,7 @@ const App = ({ errorsFetching, history, fetchResetFailure }) => {
               block
               onClick={() => {
                 fetchResetFailure();
+                setError('');
                 history.push(hrefHomePage);
               }}
             >
@@ -66,13 +74,18 @@ const App = ({ errorsFetching, history, fetchResetFailure }) => {
           <Content>
             <Switch>
               <Route exact path={hrefHomePage} component={Homepage} />
-              <Route exact path={hrefArticles} component={Homepage} />
-              <Route path={hrefLogin} component={Login} />
-              <Route path={hrefSignup} component={SignUp} />
+              <Route exact path={hrefLogin} component={Login} />
+              <Route exact path={hrefSignup} component={SignUp} />
               <Route exact path={`${hrefArticles}/:slug`} component={Article} />
-              <Route path={hrefCreateArcticle} render={() => <CreateArticle />} />
-              <Route path={`${hrefEditArticle}/:slug/edit`} render={({ match }) => <EditArticle match={match} />} />
-              <Route path={hrefEditProfile} render={() => <EditProfile />} />
+              <Route exact path={hrefCreateArcticle} render={() => <CreateArticle />} />
+              <Route
+                exact
+                path={`${hrefEditArticle}/:slug/edit`}
+                render={({ match }) => <EditArticle match={match} />}
+              />
+              <Route exact path={hrefEditProfile} render={() => <EditProfile />} />
+              <Redirect from={hrefArticles} to={hrefHomePage} />
+              <Route path="*" render={() => setError('Page not found')} />
             </Switch>
           </Content>
         </>

@@ -79,7 +79,10 @@ const EditArticle = ({
     setError,
   ]);
 
-  if (currentArticle.title && (!localStorage.getItem('userInfo') || username !== currentArticle.author.username)) {
+  if (
+    (username && currentArticle.author.username && username !== currentArticle.author.username) ||
+    !localStorage.getItem('userInfo')
+  ) {
     return <Redirect to={hrefHomePage} />;
   }
 
@@ -146,7 +149,7 @@ EditArticle.propTypes = {
       following: PropTypes.bool,
     }),
   }),
-  username: PropTypes.string.isRequired,
+  username: PropTypes.string,
   isFetching: PropTypes.bool.isRequired,
   isFetchSuccess: PropTypes.bool.isRequired,
   errorsFetching: PropTypes.shape({}),
@@ -181,4 +184,5 @@ EditArticle.defaultProps = {
   currentArticle: undefined,
   match: undefined,
   articlesList: [],
+  username: undefined,
 };
